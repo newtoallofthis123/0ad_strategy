@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CASE STUDY 01 — Ptolemies vs Medium Romans on Alpine Valley</title>
+<style>
+  :root {
+    --bg: #e8e6df;
+    --ink: #0a0a0a;
+    --paper: #f5f3eb;
+    --accent: #d83a1e;
+    --blue: #2050a0;
+    --green: #2a7040;
+    --mute: #5a5a5a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--ink); }
+  body {
+    font-family: "JetBrains Mono", "SF Mono", "Menlo", "Consolas", monospace;
+    line-height: 1.5;
+  }
+
+  .masthead {
+    border-bottom: 6px solid var(--ink);
+    padding: 24px 40px 16px;
+    background: var(--paper);
+  }
+  .nameplate {
+    font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
+    display: flex; justify-content: space-between;
+    border-bottom: 1px solid var(--ink); padding-bottom: 8px; margin-bottom: 16px;
+  }
+  .masthead h1 {
+    font-size: 48px; font-weight: 900; letter-spacing: -2px; line-height: 0.95;
+    text-transform: uppercase;
+  }
+  .masthead h1 .slash { color: var(--accent); }
+  .masthead .tagline {
+    margin-top: 12px;
+    font-size: 13px; text-transform: uppercase; letter-spacing: 1px;
+    border-top: 1px solid var(--ink); padding-top: 12px;
+    display: grid; grid-template-columns: repeat(4, 1fr);
+  }
+  .masthead .tagline span { border-right: 1px solid var(--ink); padding-right: 12px; }
+  .masthead .tagline span:last-child { border-right: 0; }
+
+  main { padding: 0 40px 60px; max-width: 1100px; margin: 0 auto; }
+
+  .block {
+    border: 3px solid var(--ink);
+    margin-top: 32px;
+    background: var(--paper);
+  }
+  .block-header {
+    background: var(--ink); color: var(--paper);
+    padding: 16px 24px;
+    display: flex; justify-content: space-between; align-items: baseline;
+    border-bottom: 3px solid var(--ink);
+  }
+  .block-header .num { font-size: 14px; letter-spacing: 3px; opacity: 0.6; }
+  .block-header .title {
+    font-size: 24px; font-weight: 900; letter-spacing: -0.5px;
+    text-transform: uppercase; flex: 1; padding: 0 24px;
+  }
+  .block-header .tag {
+    font-size: 12px; letter-spacing: 2px;
+    border-left: 1px solid var(--paper); padding-left: 16px;
+  }
+  .block-body { padding: 24px; }
+
+  h3.sub {
+    font-size: 12px; letter-spacing: 2.5px; text-transform: uppercase;
+    border-bottom: 2px solid var(--ink); padding-bottom: 4px; margin: 16px 0 8px;
+    font-weight: 700;
+  }
+  h3.sub:first-child { margin-top: 0; }
+
+  p { font-size: 13px; margin: 6px 0; }
+  ul, ol { padding-left: 20px; font-size: 13px; }
+  li { margin: 4px 0; }
+  b { font-weight: 700; }
+
+  .rule-line {
+    background: var(--ink); color: var(--paper);
+    padding: 10px 14px; margin: 10px 0;
+    border-left: 6px solid var(--accent);
+    font-size: 13px;
+  }
+  .rule-line b { color: var(--accent); }
+
+  .why-line {
+    background: rgba(42,112,64,0.08);
+    border-left: 4px solid var(--green);
+    padding: 8px 12px;
+    margin: 6px 0;
+    font-size: 12px;
+  }
+  .why-line b { color: var(--green); }
+
+  /* TIMELINE */
+  .timeline { border-left: 3px solid var(--accent); margin-left: 12px; padding-left: 24px; }
+  .tl-step { margin-bottom: 24px; position: relative; }
+  .tl-step::before {
+    content: ''; position: absolute; left: -33px; top: 6px;
+    width: 16px; height: 16px; background: var(--accent); border: 2px solid var(--ink);
+  }
+  .tl-time { font-size: 14px; font-weight: 900; letter-spacing: 2px; color: var(--accent); }
+  .tl-title { font-weight: 700; margin-top: 2px; font-size: 14px; }
+  .tl-do { font-size: 13px; margin-top: 6px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; border: 2px solid var(--ink); }
+  th, td { padding: 10px 12px; text-align: left; border: 1px solid var(--ink); vertical-align: top; }
+  th { background: var(--ink); color: var(--paper); text-transform: uppercase; letter-spacing: 1.5px; font-size: 11px; }
+
+  /* FRAMEWORK STEPS */
+  .fw-step {
+    border: 2px solid var(--ink);
+    margin-bottom: 10px;
+    padding: 14px 18px;
+    background: var(--paper);
+    display: grid; grid-template-columns: 80px 1fr;
+    gap: 16px; align-items: start;
+  }
+  .fw-num { font-size: 32px; font-weight: 900; color: var(--accent); line-height: 1; }
+  .fw-q { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+  .fw-a { font-size: 12px; color: var(--mute); margin-top: 4px; }
+
+  .footer {
+    margin-top: 48px;
+    border-top: 6px solid var(--ink);
+    padding: 24px 40px;
+    text-align: center;
+    font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--mute);
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="nameplate">
+    <span>CASE STUDY · 2026 · APPLIED MANUAL</span>
+    <span>PTOLEMIES vs MEDIUM ROMANS · ALPINE VALLEY</span>
+    <span>CASE.01</span>
+  </div>
+  <h1>CASE STUDY 01<span class="slash">/</span>SURVIVE WAVE 1</h1>
+  <div class="tagline">
+    <span>SINGLE CHOKE MAP</span>
+    <span>MEDIUM AI · ROMAN COMP</span>
+    <span>PTOLEMIES DEFENSIVE</span>
+    <span>FROM 0:00 TO 10:00</span>
+  </div>
+</header>
+
+<main>
+
+<!-- THE SCENARIO -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">SCENARIO</span>
+    <span class="title">What We're Solving</span>
+    <span class="tag">SETUP</span>
+  </div>
+  <div class="block-body">
+    <table>
+      <tr><th>Element</th><th>Value</th></tr>
+      <tr><td><b>Map</b></td><td>Alpine Valley — single eastern choke, mountains north & south, river protects flank</td></tr>
+      <tr><td><b>You</b></td><td>Ptolemies (cheap pikes, mercenary camp, strong eco)</td></tr>
+      <tr><td><b>Enemy</b></td><td>Medium AI Romans (swordsmen + skirmishers heavy, attacks straight down the valley)</td></tr>
+      <tr><td><b>Threat</b></td><td>Wave 1 around minute 8-10. <b>CRITICAL:</b> Medium AI scouts your walls and reroutes. If you wall the east choke, they attack from the NORTH flank instead. Expect 30-50+ units, not the head-on naive push.</td></tr>
+      <tr><td><b>Goal</b></td><td>Survive Wave 1 with 50%+ of your army intact. Be production-ready for Wave 2.</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- MAP READ -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">READ</span>
+    <span class="title">What the Map is Telling You</span>
+    <span class="tag">30-SECOND SURVEY</span>
+  </div>
+  <div class="block-body">
+    <ul>
+      <li><b>Mountains south</b> → free wall on that side. Don't waste stone there.</li>
+      <li><b>Eastern choke</b> — THE OBVIOUS approach. Wall it. But it is NOT the only path.</li>
+      <li><b>Northern flank along the river</b> — passable. Medium AI's known trick: <b>if you wall the east, they come north.</b> This is THE killing blow people don't see.</li>
+      <li><b>Resource clusters near base</b> → inner-ring eco. Don't expand east. Expand south, away from both attack vectors.</li>
+    </ul>
+
+    <div class="rule-line"><b>Map archetype:</b> Looks like a CHOKE map (VOL.06) but is actually a <b>TWO-PATH map in disguise</b>. The strategy: wall the obvious choke AND fortify the flank, OR you get a free Trojan Horse against yourself.</div>
+
+    <div class="rule-line" style="border-left-color: #2a7040; background: rgba(42,112,64,0.15); color: var(--ink);"><b>📚 LESSON UPDATE:</b> Medium AI scouts your walls and reroutes. Walling the east doesn't redirect them — it forces them to find the other path. <b>You must cover BOTH approaches</b>, not just the obvious one.</div>
+  </div>
+</section>
+
+<!-- THE TIMELINE -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">TIMELINE</span>
+    <span class="title">Minute-by-Minute Build</span>
+    <span class="tag">0:00 → 10:00</span>
+  </div>
+  <div class="block-body">
+
+    <div class="timeline">
+
+      <div class="tl-step">
+        <div class="tl-time">0:00 — START</div>
+        <div class="tl-title">Queue 5 women. Scout the choke. Grab treasure chests.</div>
+        <div class="tl-do">
+          <ul>
+            <li>Queue 5 villagers in CC (women — food bonus)</li>
+            <li>Send starting cav east, sweep the choke, check map edges for treasure chests</li>
+            <li>Starting villagers: 4 food (berries/sheep), 2 wood</li>
+          </ul>
+        </div>
+        <div class="why-line"><b>WHY:</b> Starting cav loop is your minimap-pre-scout. Treasure chests can give 200-300 of any resource — picking them up funds a tower / extra villagers later.</div>
+      </div>
+
+      <div class="tl-step">
+        <div class="tl-time">2:00 — FOUNDATION</div>
+        <div class="tl-title">Barracks near woodline. 3 houses. Queue another 5 villagers.</div>
+        <div class="tl-do">
+          <ul>
+            <li>Barracks goes up between CC and the choke (not deep in base)</li>
+            <li>Build 3 houses now (pop cap kills booms — see WHY)</li>
+            <li>CC queue refilled: 5 more villagers</li>
+          </ul>
+        </div>
+        <div class="why-line"><b>WHY:</b> The #1 silent eco leak is pop cap. You probably stopped training units last game because pop maxed out — and the game doesn't warn you. 3 houses now = ~30 pop headroom = no silent stalls.</div>
+      </div>
+
+      <div class="tl-step">
+        <div class="tl-time">4:00 — DOUBLE VISION</div>
+        <div class="tl-title">TWO outposts. One on north ridge. One overlooking the east choke approach.</div>
+        <div class="tl-do">
+          <ul>
+            <li><b>Outpost #1:</b> on the north ridge (covers the river flank — the AI's reroute path)</li>
+            <li><b>Outpost #2:</b> forward on the east approach (covers the obvious choke path)</li>
+            <li>Storehouse AT the woodline (3-step drop-off)</li>
+            <li>2 villagers on stone</li>
+            <li>Villager count target: 18-20</li>
+          </ul>
+        </div>
+        <div class="why-line"><b>WHY:</b> Two outposts because there are TWO approach paths. Last game your scout saw movement to the north but you misread it as expansion. With outposts on both vectors, you'll see EXACTLY which path the wave is taking — east, north, or both. Vision on the north is non-negotiable.</div>
+      </div>
+
+      <div class="tl-step">
+        <div class="tl-time">6:00 — PHASE II + DUAL DEFENSE</div>
+        <div class="tl-title">Phase up at 25 villagers. TWO towers (east + north). 2nd barracks. Don't wall the east yet.</div>
+        <div class="tl-do">
+          <ul>
+            <li>Phase II at 25 villagers, no later</li>
+            <li><b>Tower #1:</b> at the EAST choke entrance</li>
+            <li><b>Tower #2:</b> covering the NORTH approach (where the AI reroutes)</li>
+            <li>Second barracks goes up centrally — equidistant from both threats</li>
+            <li><b>DON'T wall the east yet.</b> Walling forces the AI north. Let them think east is open until you have BOTH flanks fortified.</li>
+            <li>Build 3 more houses</li>
+          </ul>
+        </div>
+        <div class="why-line"><b>WHY:</b> This is the counterintuitive move: walls are <b>information</b> to the AI. The moment you wall a path, they reroute. If you have a tower covering the OTHER path BEFORE you wall, the wall is fine — they'll get shot routing around it. If you wall first without the north tower, you funnel them into your weakness. <b>Cover before you commit.</b></div>
+      </div>
+
+      <div class="tl-step">
+        <div class="tl-time">7:00 — ARMY PIPELINE</div>
+        <div class="tl-title">Both barracks queue 5 pikes each. Mercenary Camp going up.</div>
+        <div class="tl-do">
+          <ul>
+            <li>Each barracks: queue 5 pikes (right-click 5 times)</li>
+            <li>Mercenary Camp goes up halfway to the choke — start it now</li>
+            <li>Stable optional but useful (3 cav for flanking)</li>
+            <li>Villager queue STILL going in CC</li>
+          </ul>
+        </div>
+        <div class="why-line"><b>WHY:</b> Continuous queueing is the parallel-process mindset (VOL.05). Don't pause villagers for army. Both happen simultaneously. The Merc Camp is your <b>Iberian Skirmisher</b> source — these counter Roman skirmishers directly.</div>
+      </div>
+
+      <div class="tl-step">
+        <div class="tl-time">8:00 — STANDING ARMY, CENTRAL POSITION</div>
+        <div class="tl-title">10-12 units in the CENTER. NOW wall the east. Garrison both towers. Healers ready.</div>
+        <div class="tl-do">
+          <ul>
+            <li>~10-12 units: 6 pikes, 3 skirmishers, 2 slingers, 1-2 cav</li>
+            <li>Position the army <b>centrally</b> — equidistant from both towers. They can react to whichever flank gets hit.</li>
+            <li><b>NOW wall the east choke.</b> Both flanks are covered — the AI can reroute north and still hit a tower.</li>
+            <li>Build a Temple, train 2 healers</li>
+            <li>Garrison 3 ranged in each tower (east tower + north tower)</li>
+            <li>Aggressive stance, in formation</li>
+          </ul>
+        </div>
+        <div class="why-line"><b>WHY:</b> Central army = response flexibility. If the wave comes east, you reinforce the east tower from the center. If they reroute north, you intercept on the north flank. <b>The center is the only position that responds to both.</b> Putting your whole army at the east wall is a trap that loses the moment they go north.</div>
+      </div>
+
+      <div class="tl-step">
+        <div class="tl-time">9:00 — KEEP PUMPING</div>
+        <div class="tl-title">Both barracks + merc camp pumping. Don't stop. Don't garrison yet.</div>
+        <div class="tl-do">
+          <ul>
+            <li>Both barracks: queue another 5 pikes each</li>
+            <li>Merc camp: queue 5 Iberian skirmishers</li>
+            <li>Stand pat. Don't engage. Wait for them to come to you.</li>
+            <li>Villagers KEEP GATHERING — don't garrison yet</li>
+          </ul>
+        </div>
+        <div class="why-line"><b>WHY:</b> The wave is about to hit. By being still queueing units, when wave 1 lands you'll have +5 reinforcements arriving during the fight. This is the fix for "wave 2 caught me empty" — your wave 1 doesn't pause production, so wave 2 finds you already replenishing.</div>
+      </div>
+
+      <div class="tl-step">
+        <div class="tl-time">9:30 — WAVE INCOMING</div>
+        <div class="tl-title">Outpost spots the wave. Garrison villagers. Army holds.</div>
+        <div class="tl-do">
+          <ul>
+            <li><b>Outpost confirms army moving toward you (not workers)</b> — that's an attack force</li>
+            <li>Garrison villagers in CC + houses (one hotkey)</li>
+            <li>Army stays behind wall, aggressive stance, in formation</li>
+            <li>Healers behind the army line</li>
+            <li>Reinforcements still queued in barracks — they spawn DURING the fight</li>
+          </ul>
+        </div>
+        <div class="why-line"><b>WHY:</b> Garrisoning villagers is free — they're safe and the CC shoots arrows with them inside. Your army is positioned, not panicking. The wave is now hitting infrastructure, not your eco.</div>
+      </div>
+
+      <div class="tl-step">
+        <div class="tl-time">10:00 — THE FIGHT (RESPONSIVE)</div>
+        <div class="tl-title">Read which path. Move army to that flank. Hold while reinforcements spawn.</div>
+        <div class="tl-do">
+          <p><b>Whichever flank the outpost reports — move army there.</b> Don't split. Don't hesitate.</p>
+
+          <p><b>If they come EAST (the obvious path):</b></p>
+          <ul>
+            <li>Move army to the east tower. Pikes behind the wall.</li>
+            <li>Wall + tower do massive chip while they break through</li>
+            <li>Send cav south around to flank their skirmishers</li>
+            <li>Reinforcements from barracks reach the east in 15s</li>
+          </ul>
+
+          <p><b>If they reroute NORTH (the trap):</b></p>
+          <ul>
+            <li>Move army to the north tower. No wall there but tower covers the open ground.</li>
+            <li>Pikes form a line in the open with the tower at your back</li>
+            <li>Cav loops around and hits their rear</li>
+            <li>This is where most players die — but you saw it coming and you're not panicking</li>
+          </ul>
+
+          <p>In both cases: healers tick HP, reinforcements arrive mid-fight, you don't engage until they're committed.</p>
+        </div>
+        <div class="why-line"><b>WHY:</b> The whole point of the central army + dual-outpost setup is THIS MOMENT. You're not guessing — you're <b>reading and reacting</b>. The AI can pick the path; you can pick the response. They lose either way because both flanks are covered.</div>
+      </div>
+
+    </div>
+
+    <div class="rule-line" style="margin-top: 20px;"><b>Success metric:</b> Wave 1 ends at minute 11-12. You have 8+ units alive, healers active, both barracks still queueing, and Wave 2's spawning units already partway done. <b>You're not just surviving — you're scaling.</b></div>
+  </div>
+</section>
+
+<!-- WHY THIS WORKS -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">WHY</span>
+    <span class="title">Why This Plan Wins</span>
+    <span class="tag">PRINCIPLES IT EXPLOITS</span>
+  </div>
+  <div class="block-body">
+    <table>
+      <tr><th>Principle</th><th>How it applies here</th></tr>
+      <tr><td><b>Use the map</b></td><td>Mountains = free walls north + south. River = vision lane. Only one direction to defend.</td></tr>
+      <tr><td><b>Terrain fights first</b></td><td>Tower + wall + choke do 50% of the damage before your army even engages.</td></tr>
+      <tr><td><b>Parallel processes</b></td><td>Eco grows AS army builds AS scout reports AS towers go up. Nothing waits.</td></tr>
+      <tr><td><b>Counter the comp</b></td><td>Pikes vs Roman swords. Iberian skirmishers vs Roman skirmishers. Cav flank kills their ranged.</td></tr>
+      <tr><td><b>Production never stops</b></td><td>Even during the fight, units are being trained. Wave 2 doesn't find you empty.</td></tr>
+      <tr><td><b>Houses ahead of pop</b></td><td>No silent stalls. Every barracks keeps producing without you noticing.</td></tr>
+      <tr><td><b>Outpost for read</b></td><td>You see the wave coming, you see what kind it is, you don't misread expansion as attack.</td></tr>
+      <tr><td><b>Healers in temple</b></td><td>Your units survive between waves. Wave 1 doesn't leave you at zero.</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- THE FRAMEWORK -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">FRAMEWORK</span>
+    <span class="title">How to Solve Any Matchup</span>
+    <span class="tag">REUSABLE FOR ANY CIV + MAP</span>
+  </div>
+  <div class="block-body">
+
+    <p>This specific plan is one application. To derive a plan for any future matchup, run through these 6 questions in order:</p>
+
+    <div class="fw-step">
+      <div class="fw-num">01</div>
+      <div>
+        <div class="fw-q">What is the map archetype?</div>
+        <div class="fw-a">Open / Choke / Island / Highland / Asymmetric. From VOL.06. This dictates whether to wall, rush, expand wide, or boom safe.</div>
+      </div>
+    </div>
+
+    <div class="fw-step">
+      <div class="fw-num">02</div>
+      <div>
+        <div class="fw-q">What's the enemy civ's signature comp?</div>
+        <div class="fw-a">Romans → swords+skirmishers. Persians → cav-heavy. Macedonians → pikes+siege. Each has a counter. Look it up before the game.</div>
+      </div>
+    </div>
+
+    <div class="fw-step">
+      <div class="fw-num">03</div>
+      <div>
+        <div class="fw-q">What's your civ's signature counter?</div>
+        <div class="fw-a">Ptolemies → cheap pikes, Iberian skirmishers via merc camp, elephants. What does YOUR civ do that beats THEIR comp?</div>
+      </div>
+    </div>
+
+    <div class="fw-step">
+      <div class="fw-num">04</div>
+      <div>
+        <div class="fw-q">Where can the first attack come from? (Plural.)</div>
+        <div class="fw-a">List EVERY possible approach path. Don't just pick one. Medium AI scouts walls and reroutes — if you defend only the obvious choke, they take the other path. Cover all paths with at least an outpost + tower BEFORE you wall any one.</div>
+      </div>
+    </div>
+
+    <div class="fw-step">
+      <div class="fw-num">05</div>
+      <div>
+        <div class="fw-q">What's the minimum army I need by minute 9?</div>
+        <div class="fw-a">Medium = 10-15 units behind defense. Hard = 20+. Work backwards: how many barracks need to be pumping from when?</div>
+      </div>
+    </div>
+
+    <div class="fw-step">
+      <div class="fw-num">06</div>
+      <div>
+        <div class="fw-q">How do I leave Wave 1 with units AND eco intact?</div>
+        <div class="fw-a">Use terrain + buildings to soak damage. Keep production running through the fight. Have healers. Don't all-in on the first defense.</div>
+      </div>
+    </div>
+
+    <div class="rule-line"><b>The framework in one sentence:</b> Read the map, name the enemy, pick the counter, place defense on the predicted path, hit production targets, and survive with reserves.</div>
+  </div>
+</section>
+
+<!-- COMMON FAILURES -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">PITFALLS</span>
+    <span class="title">What Killed You Last Time</span>
+    <span class="tag">DON'T REPEAT</span>
+  </div>
+  <div class="block-body">
+    <ul>
+      <li><b>Pop cap silent stall</b> — fix: 3 houses by minute 4, 3 more by minute 6, more by minute 10</li>
+      <li><b>Misreading scout report</b> — fix: army units moving TOWARD you = attack. Workers at a resource cluster = expansion. Direction matters.</li>
+      <li><b>Single-flank wall (THIS GAME'S KILLER)</b> — fix: every approach gets at least ONE tower BEFORE you wall anything. <b>Walls force reroutes; uncovered flanks become highways.</b></li>
+      <li><b>Booming THEN army</b> — fix: parallel processes. Eco never stops. Army never stops.</li>
+      <li><b>No reserves for Wave 2</b> — fix: production runs DURING wave 1. Reinforcements arrive mid-fight. Wave 2 finds you replenishing, not empty.</li>
+      <li><b>Slingers vs skirmishers</b> — fix: that's the wrong matchup. Use Iberian skirmishers + cav flank.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ENDPLATE -->
+<section class="block" style="border-color:var(--accent); border-width:6px">
+  <div class="block-header" style="background:var(--accent)">
+    <span class="num">ENDPLATE</span>
+    <span class="title">The Three Sentences to Memorize</span>
+    <span class="tag">RECITE BEFORE EACH GAME</span>
+  </div>
+  <div class="block-body">
+    <ol style="font-size: 16px; line-height: 1.7;">
+      <li><b>Read EVERY path, not just the obvious one. Walls reroute the enemy.</b></li>
+      <li><b>Cover all approaches with a tower before walling any one.</b></li>
+      <li><b>Boom and army are parallel. Never sequential.</b></li>
+      <li><b>Wave 1 must leave reserves. Wave 2 always comes.</b></li>
+    </ol>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div>END OF CASE STUDY</div>
+  <div style="margin-top: 8px;">FIELD MANUAL // APPLIED CASE.01 // PRINTED FOR INTERNAL USE</div>
+</footer>
+
+</body>
+</html>
