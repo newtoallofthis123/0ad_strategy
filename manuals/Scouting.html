@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SCOUTING // 0 A.D.</title>
+<style>
+  :root {
+    --bg: #e8e6df;
+    --ink: #0a0a0a;
+    --paper: #f5f3eb;
+    --accent: #d83a1e;
+    --blue: #2050a0;
+    --green: #2a7040;
+    --mute: #5a5a5a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--ink); }
+  body {
+    font-family: "JetBrains Mono", "SF Mono", "Menlo", "Consolas", monospace;
+    line-height: 1.5;
+  }
+
+  .masthead {
+    border-bottom: 6px solid var(--ink);
+    padding: 24px 40px 16px;
+    background: var(--paper);
+  }
+  .nameplate {
+    font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
+    display: flex; justify-content: space-between;
+    border-bottom: 1px solid var(--ink); padding-bottom: 8px; margin-bottom: 16px;
+  }
+  .masthead h1 {
+    font-size: 64px; font-weight: 900; letter-spacing: -2px; line-height: 0.9;
+    text-transform: uppercase;
+  }
+  .masthead h1 .slash { color: var(--accent); }
+  .masthead .tagline {
+    margin-top: 12px;
+    font-size: 14px; text-transform: uppercase; letter-spacing: 1px;
+    border-top: 1px solid var(--ink); padding-top: 12px;
+    display: grid; grid-template-columns: repeat(4, 1fr);
+  }
+  .masthead .tagline span { border-right: 1px solid var(--ink); padding-right: 12px; }
+  .masthead .tagline span:last-child { border-right: 0; }
+
+  main { padding: 0 40px 60px; max-width: 1100px; margin: 0 auto; }
+
+  .block {
+    border: 3px solid var(--ink);
+    margin-top: 32px;
+    background: var(--paper);
+  }
+  .block-header {
+    background: var(--ink); color: var(--paper);
+    padding: 16px 24px;
+    display: flex; justify-content: space-between; align-items: baseline;
+    border-bottom: 3px solid var(--ink);
+  }
+  .block-header .num { font-size: 14px; letter-spacing: 3px; opacity: 0.6; }
+  .block-header .title {
+    font-size: 28px; font-weight: 900; letter-spacing: -0.5px;
+    text-transform: uppercase; flex: 1; padding: 0 24px;
+  }
+  .block-header .tag {
+    font-size: 12px; letter-spacing: 2px;
+    border-left: 1px solid var(--paper); padding-left: 16px;
+  }
+  .block-body { padding: 24px; }
+
+  .body-split { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+  .diagram-pane { border-right: 3px solid var(--ink); padding: 24px; background: var(--bg); display: flex; align-items: center; justify-content: center; }
+  .diagram-pane svg { width: 100%; max-width: 420px; height: auto; }
+  .text-pane { padding: 24px; }
+
+  h3.sub {
+    font-size: 12px; letter-spacing: 2.5px; text-transform: uppercase;
+    border-bottom: 2px solid var(--ink); padding-bottom: 4px; margin: 16px 0 8px;
+    font-weight: 700;
+  }
+  h3.sub:first-child { margin-top: 0; }
+
+  p { font-size: 13px; margin: 6px 0; }
+  ul, ol { padding-left: 20px; font-size: 13px; }
+  li { margin: 4px 0; }
+  b { font-weight: 700; }
+
+  .rule-line {
+    background: var(--ink); color: var(--paper);
+    padding: 10px 14px; margin: 10px 0;
+    border-left: 6px solid var(--accent);
+    font-size: 13px;
+  }
+  .rule-line b { color: var(--accent); }
+
+  .qa-grid { display: grid; grid-template-columns: 1fr; gap: 0; border: 2px solid var(--ink); margin: 12px 0; }
+  .qa-row { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--ink); }
+  .qa-row:last-child { border-bottom: 0; }
+  .qa-q { padding: 12px 14px; border-right: 1px solid var(--ink); background: rgba(216,58,30,0.08); font-size: 13px; font-weight: 700; }
+  .qa-a { padding: 12px 14px; font-size: 12px; }
+
+  .stage-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border-top: 2px solid var(--ink); border-left: 2px solid var(--ink); margin: 12px 0; }
+  .stage-grid > div { border-right: 2px solid var(--ink); border-bottom: 2px solid var(--ink); padding: 14px; }
+  .stage-grid h4 { font-size: 13px; text-transform: uppercase; letter-spacing: 2px; color: var(--accent); margin-bottom: 6px; }
+  .stage-grid .stime { font-size: 11px; color: var(--mute); margin-bottom: 8px; }
+  .stage-grid p { font-size: 12px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--ink); }
+  th { background: var(--ink); color: var(--paper); text-transform: uppercase; letter-spacing: 1.5px; font-size: 11px; }
+
+  .footer {
+    margin-top: 48px;
+    border-top: 6px solid var(--ink);
+    padding: 24px 40px;
+    text-align: center;
+    font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--mute);
+  }
+
+  @media (max-width: 800px) {
+    .body-split, .stage-grid { grid-template-columns: 1fr; }
+    .qa-row { grid-template-columns: 1fr; }
+    .qa-q { border-right: 0; border-bottom: 1px solid var(--ink); }
+    .diagram-pane { border-right: 0; border-bottom: 3px solid var(--ink); }
+  }
+
+  /* VOLUME NAV */
+  .volume-nav {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr) 48px;
+    align-items: center;
+    gap: 0;
+    background: var(--ink);
+    color: var(--paper);
+    border-bottom: 3px solid var(--ink);
+  }
+  .volume-nav a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .volume-arrow {
+    display: grid;
+    place-items: center;
+    min-height: 48px;
+    border-right: 1px solid var(--paper);
+    font-size: 24px;
+    font-weight: 900;
+  }
+  .volume-arrow.next {
+    border-right: 0;
+    border-left: 1px solid var(--paper);
+  }
+  .volume-title {
+    min-width: 0;
+    padding: 12px 16px;
+    text-align: center;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .volume-arrow:hover,
+  .volume-arrow:focus-visible {
+    background: var(--accent);
+    outline: 0;
+  }
+
+</style>
+</head>
+<body>
+<nav class="volume-nav" aria-label="Volume navigation">
+  <a class="volume-arrow prev" href="Defense%20Strategies.html" aria-label="Previous volume">&lt;</a>
+  <div class="volume-title">Scouting</div>
+  <a class="volume-arrow next" href="Economy%20+%20Upgrades.html" aria-label="Next volume">&gt;</a>
+</nav>
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <div class="nameplate">
+    <span>VOL.04 — TUE 12.MAY.2026</span>
+    <span>FIELD MANUAL // SCOUTING // 0 A.D.</span>
+    <span>NO.004</span>
+  </div>
+  <h1>SCOUTING<span class="slash">/</span>EYES</h1>
+  <div class="tagline">
+    <span>SEE BEFORE THEY SEE YOU</span>
+    <span>ASK A QUESTION FIRST</span>
+    <span>DEATH IS DATA</span>
+    <span>OUTPOSTS DON'T DIE</span>
+  </div>
+</header>
+
+<main>
+
+<!-- DOCTRINE -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">DOCTRINE</span>
+    <span class="title">Three Laws of Scouting</span>
+    <span class="tag">READ FIRST</span>
+  </div>
+  <div class="block-body">
+
+    <div class="rule-line"><b>LAW 01 —</b> A scout's job is <b>information, not combat.</b> If it's fighting, it's failed.</div>
+
+    <div class="rule-line"><b>LAW 02 —</b> Scout <b>WITH a question</b>, not "to look around." A specific question changes where you send the scout.</div>
+
+    <div class="rule-line"><b>LAW 03 —</b> The map is uncontested in Phase I. <b>Build outposts before you need them.</b> Once the map heats up, you can't sneak out to place them.</div>
+  </div>
+</section>
+
+<!-- WHAT IS A SCOUT -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">PRIMER</span>
+    <span class="title">What Is A Scout</span>
+    <span class="tag">DEFINITION</span>
+  </div>
+  <div class="block-body">
+    <p>A scout is any unit you send to <b>gather information instead of fight</b>. Ptolemies start with a camel — that IS your scout. Most civs start with one cavalry unit for this purpose.</p>
+    <p>The intelligence you're after:</p>
+    <ul>
+      <li>Where is the enemy base?</li>
+      <li>Where is their army right now?</li>
+      <li>What units are they building?</li>
+      <li>Are they teching / expanding / preparing to attack?</li>
+      <li>What resources are they on?</li>
+    </ul>
+    <div class="rule-line"><b>The information gap is the strategic gap.</b> A blind player loses to a slightly weaker player with vision.</div>
+  </div>
+</section>
+
+<!-- =========== TOOL 01 CAVALRY =========== -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">TOOL 01</span>
+    <span class="title">Cavalry Scouting</span>
+    <span class="tag">★ EARLY GAME · FAST</span>
+  </div>
+  <div class="body-split">
+    <div class="diagram-pane">
+      <svg viewBox="0 0 400 280">
+        <!-- Map edge box -->
+        <rect x="20" y="30" width="360" height="220" fill="none" stroke="#0a0a0a" stroke-width="2" stroke-dasharray="6"/>
+        <!-- Your base -->
+        <rect x="40" y="200" width="50" height="40" fill="#2050a0"/>
+        <text x="65" y="225" font-family="monospace" font-size="9" fill="#f5f3eb" text-anchor="middle" font-weight="bold">YOU</text>
+        <!-- Enemy base -->
+        <rect x="310" y="50" width="50" height="40" fill="#0a0a0a"/>
+        <text x="335" y="75" font-family="monospace" font-size="9" fill="#f5f3eb" text-anchor="middle" font-weight="bold">ENEMY</text>
+
+        <!-- Cav circular path -->
+        <g stroke="#d83a1e" stroke-width="3" fill="none" stroke-dasharray="8 4">
+          <path d="M90,200 Q60,140 100,80 Q180,40 280,60 Q330,90 360,140 Q360,200 320,220 Q220,250 90,200 Z"/>
+        </g>
+
+        <!-- Cav unit -->
+        <g fill="#d83a1e">
+          <ellipse cx="180" cy="50" rx="10" ry="6"/>
+          <rect x="172" y="40" width="10" height="10"/>
+        </g>
+        <text x="200" y="42" font-family="monospace" font-size="9" font-weight="bold" fill="#d83a1e">SCOUT</text>
+
+        <text x="200" y="20" font-family="monospace" font-size="11" font-weight="bold" text-anchor="middle" fill="#0a0a0a">ONE CAV. WIDE LOOP. KEEP MOVING.</text>
+      </svg>
+    </div>
+    <div class="text-pane">
+      <h3 class="sub">// The Tool</h3>
+      <p>Send your starting cav on a wide loop around the map. It's fast, free, and reveals huge amounts of map in the first 4 minutes.</p>
+
+      <h3 class="sub">// When it works</h3>
+      <p><b>Phase I (0-6 min).</b> The map is empty. No one has built units yet. Your cav can ride right past their CC and live.</p>
+
+      <h3 class="sub">// When it stops working</h3>
+      <p>When the enemy has units patrolling — usually by minute 8-10. Your cav starts dying.</p>
+
+      <div class="rule-line"><b>The rule:</b> Always keep ONE cav alive on patrol. If it dies, replace it within 30 seconds. The fog-of-war is what's killing your far bases.</div>
+    </div>
+  </div>
+</section>
+
+<!-- =========== TOOL 02 OUTPOSTS =========== -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">TOOL 02</span>
+    <span class="title">Outposts &amp; Watchtowers</span>
+    <span class="tag">★★ MID + LATE · CAN'T DIE</span>
+  </div>
+  <div class="body-split">
+    <div class="diagram-pane">
+      <svg viewBox="0 0 400 280">
+        <!-- Map -->
+        <rect x="20" y="30" width="360" height="220" fill="none" stroke="#0a0a0a" stroke-width="2" stroke-dasharray="6"/>
+        <!-- Your base -->
+        <rect x="40" y="200" width="50" height="40" fill="#2050a0"/>
+        <text x="65" y="225" font-family="monospace" font-size="9" fill="#f5f3eb" text-anchor="middle" font-weight="bold">YOU</text>
+        <!-- Enemy base -->
+        <rect x="310" y="50" width="50" height="40" fill="#0a0a0a"/>
+        <text x="335" y="75" font-family="monospace" font-size="9" fill="#f5f3eb" text-anchor="middle" font-weight="bold">ENEMY</text>
+
+        <!-- Outposts with vision circles -->
+        <g>
+          <circle cx="200" cy="140" r="50" fill="#d83a1e" opacity="0.12" stroke="#d83a1e" stroke-width="1" stroke-dasharray="3"/>
+          <rect x="195" y="135" width="10" height="14" fill="#0a0a0a"/>
+          <polygon points="193,135 207,135 200,128" fill="#d83a1e"/>
+          <text x="200" y="195" font-family="monospace" font-size="8" fill="#d83a1e" text-anchor="middle" font-weight="bold">OUTPOST</text>
+        </g>
+        <g>
+          <circle cx="100" cy="100" r="50" fill="#d83a1e" opacity="0.12" stroke="#d83a1e" stroke-width="1" stroke-dasharray="3"/>
+          <rect x="95" y="95" width="10" height="14" fill="#0a0a0a"/>
+          <polygon points="93,95 107,95 100,88" fill="#d83a1e"/>
+        </g>
+        <g>
+          <circle cx="280" cy="160" r="50" fill="#d83a1e" opacity="0.12" stroke="#d83a1e" stroke-width="1" stroke-dasharray="3"/>
+          <rect x="275" y="155" width="10" height="14" fill="#0a0a0a"/>
+          <polygon points="273,155 287,155 280,148" fill="#d83a1e"/>
+        </g>
+        <g>
+          <circle cx="320" cy="200" r="50" fill="#d83a1e" opacity="0.12" stroke="#d83a1e" stroke-width="1" stroke-dasharray="3"/>
+          <rect x="315" y="195" width="10" height="14" fill="#0a0a0a"/>
+          <polygon points="313,195 327,195 320,188" fill="#d83a1e"/>
+        </g>
+
+        <text x="200" y="20" font-family="monospace" font-size="11" font-weight="bold" text-anchor="middle" fill="#0a0a0a">4 OUTPOSTS = ~60% MAP COVERAGE</text>
+        <text x="200" y="270" font-family="monospace" font-size="9" fill="#5a5a5a" text-anchor="middle">200 WOOD TOTAL · PERMANENT VISION</text>
+      </svg>
+    </div>
+    <div class="text-pane">
+      <h3 class="sub">// The Tool</h3>
+      <p>50 wood per outpost. Permanent vision in a circle around them. They can be killed, but only with effort — usually requiring siege.</p>
+
+      <h3 class="sub">// Where to place</h3>
+      <ul>
+        <li>Hills &amp; ridges (extended sight)</li>
+        <li>Map edges (rarely patrolled)</li>
+        <li>Choke points NEAR enemy approach</li>
+        <li>Neutral resource deposits (denies + scouts)</li>
+      </ul>
+
+      <h3 class="sub">// Critical timing</h3>
+      <p><b>Build them in Phase I-II</b>, while the map is uncontested. Once the enemy roams, you can't sneak villagers out to place them.</p>
+
+      <div class="rule-line"><b>The single biggest scouting fix:</b> 4 outposts by minute 8. Cost: 200 wood. Value: permanent vision for the rest of the game.</div>
+    </div>
+  </div>
+</section>
+
+<!-- =========== TOOL 03 EDGE PROBES =========== -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">TOOL 03</span>
+    <span class="title">Edge Probes &amp; Sacrifices</span>
+    <span class="tag">★★★ LATE GAME · DEATH IS DATA</span>
+  </div>
+  <div class="body-split">
+    <div class="diagram-pane">
+      <svg viewBox="0 0 400 280">
+        <!-- Map -->
+        <rect x="20" y="30" width="360" height="220" fill="none" stroke="#0a0a0a" stroke-width="2" stroke-dasharray="6"/>
+        <!-- Enemy base centre -->
+        <rect x="170" y="100" width="60" height="60" fill="#0a0a0a"/>
+        <text x="200" y="135" font-family="monospace" font-size="10" fill="#f5f3eb" text-anchor="middle" font-weight="bold">ENEMY</text>
+
+        <!-- Enemy patrol zone -->
+        <ellipse cx="200" cy="130" rx="90" ry="60" fill="#d83a1e" opacity="0.1" stroke="#d83a1e" stroke-width="1" stroke-dasharray="3"/>
+        <text x="200" y="200" font-family="monospace" font-size="9" fill="#d83a1e" text-anchor="middle">PATROLLED ZONE</text>
+
+        <!-- 3 probes from your side -->
+        <g stroke="#2050a0" stroke-width="2" fill="none" stroke-dasharray="4">
+          <!-- Top edge probe (survives) -->
+          <path d="M30,50 L370,50"/>
+          <polygon points="365,45 375,50 365,55" fill="#2050a0"/>
+          <!-- Middle (dies) -->
+          <path d="M30,140 L120,140"/>
+        </g>
+        <!-- Death X -->
+        <g stroke="#d83a1e" stroke-width="3">
+          <line x1="115" y1="135" x2="125" y2="145"/>
+          <line x1="125" y1="135" x2="115" y2="145"/>
+        </g>
+        <text x="125" y="160" font-family="monospace" font-size="9" fill="#d83a1e" font-weight="bold">DIES HERE</text>
+        <text x="135" y="172" font-family="monospace" font-size="9" fill="#d83a1e">= ARMY IS THERE</text>
+
+        <!-- Bottom edge probe (survives) -->
+        <g stroke="#2050a0" stroke-width="2" fill="none" stroke-dasharray="4">
+          <path d="M30,230 L370,230"/>
+          <polygon points="365,225 375,230 365,235" fill="#2050a0"/>
+        </g>
+
+        <!-- Probes -->
+        <g fill="#2050a0">
+          <rect x="32" y="46" width="8" height="8"/>
+          <rect x="32" y="136" width="8" height="8"/>
+          <rect x="32" y="226" width="8" height="8"/>
+        </g>
+
+        <text x="200" y="20" font-family="monospace" font-size="11" font-weight="bold" text-anchor="middle" fill="#0a0a0a">SEND 3 — LOSE 1 — LEARN 3 PATHS</text>
+      </svg>
+    </div>
+    <div class="text-pane">
+      <h3 class="sub">// The Tool</h3>
+      <p>Send cheap throwaway units along multiple paths simultaneously. <b>Some will die.</b> Where they die tells you where the enemy army is.</p>
+
+      <h3 class="sub">// How it works</h3>
+      <ol>
+        <li>Send 3 cav (or spearmen) along 3 different paths — top edge, middle, bottom edge</li>
+        <li>Map edges are rarely patrolled — those usually survive</li>
+        <li>If the middle one dies, the enemy army is along the middle</li>
+        <li>You learned 3 paths of info for the cost of 1 cheap unit</li>
+      </ol>
+
+      <h3 class="sub">// The mindset</h3>
+      <p>A dead scout is not a wasted scout. <b>Where it died is the intel.</b> Death = data.</p>
+
+      <div class="rule-line"><b>Use this</b> when you can't get a live scout close. Late game, this is often your only option.</div>
+    </div>
+  </div>
+</section>
+
+<!-- SCOUT WITH A QUESTION -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">METHOD</span>
+    <span class="title">Scout WITH A Question</span>
+    <span class="tag">PREDICTIVE</span>
+  </div>
+  <div class="block-body">
+    <p>Beginners scout randomly. Pros scout with a <b>specific question</b> they're trying to answer. The question changes WHERE you send the scout, WHEN, and what you're looking at.</p>
+
+    <div class="qa-grid">
+      <div class="qa-row">
+        <div class="qa-q">// Is their army still at home?</div>
+        <div class="qa-a">Send cav toward their CC. If it dies fast → army is home. If it reaches the CC → army is out somewhere else.</div>
+      </div>
+      <div class="qa-row">
+        <div class="qa-q">// Are they teching to Phase III?</div>
+        <div class="qa-a">Look at their CC for the phase-up upgrade animation. Or scan for new building shapes: Forts, Embassies, Wonders.</div>
+      </div>
+      <div class="qa-row">
+        <div class="qa-q">// Did they expand to that resource?</div>
+        <div class="qa-a">Patrol the natural expansion points — stone, metal, second CC spots. Workers there = they expanded.</div>
+      </div>
+      <div class="qa-row">
+        <div class="qa-q">// Are they about to attack?</div>
+        <div class="qa-a">Look for: army gathering at chokepoints, forward outposts being built, tower being placed near you.</div>
+      </div>
+      <div class="qa-row">
+        <div class="qa-q">// What's their army composition?</div>
+        <div class="qa-a">Sneak cav close enough to see units, then retreat. You only need 2 seconds of vision. Note ratios, retreat.</div>
+      </div>
+      <div class="qa-row">
+        <div class="qa-q">// Where is the weak point I should attack?</div>
+        <div class="qa-a">Patrol around their base — find the side with fewest towers, no walls, exposed workers.</div>
+      </div>
+    </div>
+
+    <div class="rule-line"><b>The shift:</b> from "I should scout" to "I need to know X — let me confirm." Specific question, specific tool, specific time.</div>
+  </div>
+</section>
+
+<!-- BY STAGE -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">PHASES</span>
+    <span class="title">Scouting By Phase</span>
+    <span class="tag">WHAT TO USE WHEN</span>
+  </div>
+  <div class="block-body">
+    <div class="stage-grid">
+      <div>
+        <h4>// PHASE I</h4>
+        <div class="stime">0-6 MIN</div>
+        <p><b>Cavalry loop.</b> Map is uncontested. One cav, ride wide circle. Find enemy CC by minute 4. <b>Build first 2 outposts</b> at map edges.</p>
+      </div>
+      <div>
+        <h4>// PHASE II</h4>
+        <div class="stime">6-12 MIN</div>
+        <p><b>Cav + outposts.</b> Cav still works but riskier. Build 2 more outposts at chokes. Patrol cav stays alive — replaces if killed.</p>
+      </div>
+      <div>
+        <h4>// PHASE III+</h4>
+        <div class="stime">12 MIN — END</div>
+        <p><b>Outposts + edge probes.</b> Cav can't get close anymore. Read from your outposts. Send sacrificial probes when you need fresh data.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TROUBLESHOOTING -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">DEBUG</span>
+    <span class="title">My Scout Keeps Dying</span>
+    <span class="tag">TROUBLESHOOTING</span>
+  </div>
+  <div class="block-body">
+    <table>
+      <thead>
+        <tr><th>Symptom</th><th>Fix</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Cav dies at the same spot every time</td><td>That spot is their patrol. Go around it via map edge.</td></tr>
+        <tr><td>Cav dies before reaching their base</td><td>Map is contested. Switch to outposts + edge probes.</td></tr>
+        <tr><td>Can't see anything because of fog</td><td>You didn't place outposts in Phase I-II. Lesson for next game.</td></tr>
+        <tr><td>Lose vision the moment cav dies</td><td>Always have 2 scouts, not 1. Replace BEFORE the first dies.</td></tr>
+        <tr><td>Scout finds nothing interesting</td><td>You're scouting without a question. Form a hypothesis first.</td></tr>
+        <tr><td>Enemy attacks surprise you anyway</td><td>You aren't scouting often enough. Set a 60s mental timer.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ENDPLATE -->
+<section class="block" style="border-color:var(--accent); border-width:6px">
+  <div class="block-header" style="background:var(--accent)">
+    <span class="num">ENDPLATE</span>
+    <span class="title">The Scouting Habit</span>
+    <span class="tag">MEMORIZE</span>
+  </div>
+  <div class="block-body">
+    <ol>
+      <li><b>Minute 1:</b> Start your cav loop. Find enemy by minute 4.</li>
+      <li><b>Minute 6:</b> Build outposts 1-2 at safe map edges.</li>
+      <li><b>Minute 10:</b> Build outposts 3-4 at chokepoints near approaches.</li>
+      <li><b>Every 60 seconds:</b> ask one specific question. Send a scout to answer it.</li>
+      <li><b>When cav stops surviving:</b> switch to edge probes + outpost reading.</li>
+      <li><b>If you ever lose vision:</b> immediately replace the dead scout. Don't wait.</li>
+      <li><b>Death is data:</b> if a probe dies, you learned where the enemy is.</li>
+      <li><b>The information gap is the strategic gap.</b> Vision wins games.</li>
+    </ol>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div>END OF DOCUMENT</div>
+  <div style="margin-top: 8px;">FIELD MANUAL // SCOUTING // PRINTED FOR INTERNAL USE</div>
+</footer>
+
+</body>
+</html>

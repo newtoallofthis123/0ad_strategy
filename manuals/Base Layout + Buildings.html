@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>BASE LAYOUT + BUILDINGS // 0 A.D.</title>
+<style>
+  :root {
+    --bg: #e8e6df;
+    --ink: #0a0a0a;
+    --paper: #f5f3eb;
+    --accent: #d83a1e;
+    --blue: #2050a0;
+    --green: #2a7040;
+    --food: #c84030;
+    --wood: #5a8040;
+    --stone: #708090;
+    --metal: #b88030;
+    --water: #4080b0;
+    --mute: #5a5a5a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--ink); }
+  body {
+    font-family: "JetBrains Mono", "SF Mono", "Menlo", "Consolas", monospace;
+    line-height: 1.5;
+  }
+
+  .masthead {
+    border-bottom: 6px solid var(--ink);
+    padding: 24px 40px 16px;
+    background: var(--paper);
+  }
+  .nameplate {
+    font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
+    display: flex; justify-content: space-between;
+    border-bottom: 1px solid var(--ink); padding-bottom: 8px; margin-bottom: 16px;
+  }
+  .masthead h1 {
+    font-size: 60px; font-weight: 900; letter-spacing: -2px; line-height: 0.9;
+    text-transform: uppercase;
+  }
+  .masthead h1 .slash { color: var(--accent); }
+  .masthead .tagline {
+    margin-top: 12px;
+    font-size: 14px; text-transform: uppercase; letter-spacing: 1px;
+    border-top: 1px solid var(--ink); padding-top: 12px;
+    display: grid; grid-template-columns: repeat(4, 1fr);
+  }
+  .masthead .tagline span { border-right: 1px solid var(--ink); padding-right: 12px; }
+  .masthead .tagline span:last-child { border-right: 0; }
+
+  main { padding: 0 40px 60px; max-width: 1100px; margin: 0 auto; }
+
+  .block {
+    border: 3px solid var(--ink);
+    margin-top: 32px;
+    background: var(--paper);
+  }
+  .block-header {
+    background: var(--ink); color: var(--paper);
+    padding: 16px 24px;
+    display: flex; justify-content: space-between; align-items: baseline;
+    border-bottom: 3px solid var(--ink);
+  }
+  .block-header .num { font-size: 14px; letter-spacing: 3px; opacity: 0.6; }
+  .block-header .title {
+    font-size: 26px; font-weight: 900; letter-spacing: -0.5px;
+    text-transform: uppercase; flex: 1; padding: 0 24px;
+  }
+  .block-header .tag {
+    font-size: 12px; letter-spacing: 2px;
+    border-left: 1px solid var(--paper); padding-left: 16px;
+  }
+  .block-body { padding: 24px; }
+
+  .body-split { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+  .diagram-pane { border-right: 3px solid var(--ink); padding: 24px; background: var(--bg); display: flex; align-items: center; justify-content: center; }
+  .diagram-pane svg { width: 100%; max-width: 480px; height: auto; }
+  .text-pane { padding: 24px; }
+
+  h3.sub {
+    font-size: 12px; letter-spacing: 2.5px; text-transform: uppercase;
+    border-bottom: 2px solid var(--ink); padding-bottom: 4px; margin: 16px 0 8px;
+    font-weight: 700;
+  }
+  h3.sub:first-child { margin-top: 0; }
+
+  p { font-size: 13px; margin: 6px 0; }
+  ul, ol { padding-left: 20px; font-size: 13px; }
+  li { margin: 4px 0; }
+  b { font-weight: 700; }
+
+  .rule-line {
+    background: var(--ink); color: var(--paper);
+    padding: 10px 14px; margin: 10px 0;
+    border-left: 6px solid var(--accent);
+    font-size: 13px;
+  }
+  .rule-line b { color: var(--accent); }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; border: 2px solid var(--ink); }
+  th, td { padding: 10px 12px; text-align: left; border: 1px solid var(--ink); vertical-align: top; }
+  th { background: var(--ink); color: var(--paper); text-transform: uppercase; letter-spacing: 1.5px; font-size: 11px; }
+  td.bldg { font-weight: 700; white-space: nowrap; }
+
+  /* BUILDING CARD GRID */
+  .b-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0; border-top: 2px solid var(--ink); border-left: 2px solid var(--ink); margin: 12px 0; }
+  .b-card { border-right: 2px solid var(--ink); border-bottom: 2px solid var(--ink); padding: 14px; }
+  .b-card .bname { font-size: 14px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); }
+  .b-card .brole { font-size: 11px; color: var(--mute); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
+  .b-card p { font-size: 12px; }
+
+  /* MISTAKE LIST */
+  .mistakes { padding: 0; list-style: none; }
+  .mistakes li {
+    border: 2px solid var(--accent);
+    background: rgba(216,58,30,0.05);
+    margin-bottom: 6px;
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+  .mistakes li::before {
+    content: "✗";
+    color: var(--accent);
+    font-weight: 700;
+    margin-right: 8px;
+  }
+
+  /* PRIORITY LIST */
+  .priority {
+    list-style: none; padding: 0;
+  }
+  .priority li {
+    display: grid; grid-template-columns: 40px 1fr 120px; align-items: center;
+    border: 2px solid var(--ink);
+    margin-bottom: 6px;
+    padding: 10px 14px;
+    font-size: 13px;
+    background: var(--paper);
+  }
+  .priority .pnum { font-size: 20px; font-weight: 900; color: var(--accent); }
+  .priority .ptag { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; text-align: right; font-weight: 700; padding: 4px 8px; border: 1px solid var(--ink); }
+
+  .footer {
+    margin-top: 48px;
+    border-top: 6px solid var(--ink);
+    padding: 24px 40px;
+    text-align: center;
+    font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--mute);
+  }
+
+  @media (max-width: 800px) {
+    .body-split, .b-grid { grid-template-columns: 1fr; }
+    .diagram-pane { border-right: 0; border-bottom: 3px solid var(--ink); }
+  }
+
+  /* VOLUME NAV */
+  .volume-nav {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr) 48px;
+    align-items: center;
+    gap: 0;
+    background: var(--ink);
+    color: var(--paper);
+    border-bottom: 3px solid var(--ink);
+  }
+  .volume-nav a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .volume-arrow {
+    display: grid;
+    place-items: center;
+    min-height: 48px;
+    border-right: 1px solid var(--paper);
+    font-size: 24px;
+    font-weight: 900;
+  }
+  .volume-arrow.next {
+    border-right: 0;
+    border-left: 1px solid var(--paper);
+  }
+  .volume-title {
+    min-width: 0;
+    padding: 12px 16px;
+    text-align: center;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .volume-arrow:hover,
+  .volume-arrow:focus-visible {
+    background: var(--accent);
+    outline: 0;
+  }
+
+</style>
+</head>
+<body>
+<nav class="volume-nav" aria-label="Volume navigation">
+  <a class="volume-arrow prev" href="Map%20Reading.html" aria-label="Previous volume">&lt;</a>
+  <div class="volume-title">Base Layout + Buildings</div>
+  <a class="volume-arrow next" href="Army%20Counter%20Guide.html" aria-label="Next volume">&gt;</a>
+</nav>
+
+<header class="masthead">
+  <div class="nameplate">
+    <span>VOL.07 — TUE 12.MAY.2026</span>
+    <span>FIELD MANUAL // BASE + BUILDINGS // 0 A.D.</span>
+    <span>NO.007</span>
+  </div>
+  <h1>BASE LAYOUT<span class="slash">+</span>BUILDINGS</h1>
+  <div class="tagline">
+    <span>EVERY BUILDING HAS A SECOND COST</span>
+    <span>WALKING TIME</span>
+    <span>BUILD WHERE IT FIGHTS</span>
+    <span>USE THE TERRAIN</span>
+  </div>
+</header>
+
+<main>
+
+<!-- DOCTRINE -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">DOCTRINE</span>
+    <span class="title">Three Laws of Layout</span>
+    <span class="tag">READ FIRST</span>
+  </div>
+  <div class="block-body">
+    <div class="rule-line"><b>LAW 01 —</b> Every building has TWO costs: the resources to build it, AND the <b>walking time</b> it adds to its users. The second cost is invisible but enormous.</div>
+    <div class="rule-line"><b>LAW 02 —</b> <b>Build where it fights.</b> Barracks near the front, towers at chokes, mercs near the action. Centralized = trickle reinforcements = lost battles.</div>
+    <div class="rule-line"><b>LAW 03 —</b> <b>Use the terrain.</b> The map already built half your defense — cliffs, water, forests, chokes. Just complete it.</div>
+  </div>
+</section>
+
+<!-- BUILDING-BY-BUILDING -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">PLACEMENT</span>
+    <span class="title">Building-by-Building Rules</span>
+    <span class="tag">WHERE EACH GOES</span>
+  </div>
+  <div class="block-body">
+    <table>
+      <thead>
+        <tr><th>Building</th><th>Where to place</th><th>Common mistake</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="bldg">Civic Centre</td><td>Near a food source (berries, sheep, water). Leave room for farms.</td><td>On a map edge or far from food</td></tr>
+        <tr><td class="bldg">Farms</td><td>Clustered tightly around CC. 8-12 farms in a ring touching it.</td><td>Scattered far from CC</td></tr>
+        <tr><td class="bldg">Storehouse</td><td>AT the edge of the forest, not 20 tiles away. One per resource cluster.</td><td>Far from the woodline (silent eco bleed)</td></tr>
+        <tr><td class="bldg">Houses</td><td>Cluster near CC. Bonus: maze them near tower/choke for defense.</td><td>Wasted on perimeter</td></tr>
+        <tr><td class="bldg">Barracks</td><td>Forward, not central. Between CC and the enemy choke. Rally → forward.</td><td>Deep in base, reinforcements arrive too late</td></tr>
+        <tr><td class="bldg">Fortress</td><td>At the choke, behind 1-2 towers. Anchor of defense + champion + hero training.</td><td>Built late, only used reactively</td></tr>
+        <tr><td class="bldg">Towers</td><td>Cover resource lines, chokes, gaps between CC and forward base. Overlap zones.</td><td>Around base perimeter instead of at chokes</td></tr>
+        <tr><td class="bldg">Walls</td><td>ONLY at chokes. Use cliffs/forests/water for the rest.</td><td>Trying to wall the whole base (slow + wasteful)</td></tr>
+        <tr><td class="bldg">Mercenary Camp</td><td>Halfway to enemy, near forward outpost. Reinforcements appear at the fight.</td><td>Built near home — defeats the purpose</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- IDEAL BASE LAYOUT -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">DIAGRAM</span>
+    <span class="title">The Ideal Base Layout</span>
+    <span class="tag">TOP-DOWN VIEW</span>
+  </div>
+  <div class="block-body">
+    <div style="background: var(--bg); padding: 24px; border: 2px solid var(--ink); display: flex; justify-content: center;">
+      <svg viewBox="0 0 600 420" style="width: 100%; max-width: 700px; height: auto;">
+        <!-- Cliffs (top-left and bottom-left) -->
+        <polygon points="0,0 180,0 160,80 100,140 0,160" fill="#a89878" stroke="#0a0a0a" stroke-width="1"/>
+        <polygon points="0,420 0,300 80,280 140,340 130,420" fill="#a89878" stroke="#0a0a0a" stroke-width="1"/>
+        <text x="60" y="50" font-family="monospace" font-size="9" fill="#5a4020" font-weight="bold">CLIFF · FREE WALL</text>
+        <text x="50" y="380" font-family="monospace" font-size="9" fill="#5a4020" font-weight="bold">CLIFF</text>
+
+        <!-- Forest on south -->
+        <g fill="#5a8040">
+          <circle cx="250" cy="370" r="14"/>
+          <circle cx="270" cy="385" r="12"/>
+          <circle cx="230" cy="385" r="12"/>
+          <circle cx="290" cy="365" r="14"/>
+        </g>
+        <text x="260" y="410" font-family="monospace" font-size="9" fill="#5a8040" font-weight="bold" text-anchor="middle">FOREST</text>
+
+        <!-- Stone deposit east -->
+        <g fill="#708090">
+          <rect x="490" y="100" width="14" height="14"/>
+          <rect x="510" y="110" width="14" height="14"/>
+          <rect x="500" y="130" width="14" height="14"/>
+        </g>
+        <text x="510" y="155" font-family="monospace" font-size="9" fill="#708090" font-weight="bold" text-anchor="middle">STONE</text>
+
+        <!-- CC -->
+        <rect x="230" y="180" width="60" height="60" fill="#0a0a0a"/>
+        <text x="260" y="215" font-family="monospace" font-size="12" fill="#f5f3eb" text-anchor="middle" font-weight="bold">CC</text>
+
+        <!-- Farms around CC -->
+        <g fill="#c84030" stroke="#0a0a0a" stroke-width="1">
+          <rect x="180" y="170" width="40" height="30"/>
+          <rect x="180" y="210" width="40" height="30"/>
+          <rect x="300" y="170" width="40" height="30"/>
+          <rect x="300" y="210" width="40" height="30"/>
+          <rect x="230" y="130" width="40" height="40"/>
+          <rect x="230" y="250" width="40" height="30"/>
+          <rect x="180" y="130" width="40" height="30"/>
+          <rect x="300" y="130" width="40" height="30"/>
+        </g>
+        <text x="260" y="290" font-family="monospace" font-size="8" fill="#5a5a5a" text-anchor="middle">FARM RING (TIGHT)</text>
+
+        <!-- Houses cluster -->
+        <g fill="#8b6f3a">
+          <rect x="350" y="200" width="20" height="20"/>
+          <rect x="375" y="200" width="20" height="20"/>
+          <rect x="350" y="225" width="20" height="20"/>
+          <rect x="375" y="225" width="20" height="20"/>
+        </g>
+        <text x="370" y="262" font-family="monospace" font-size="8" fill="#5a5a5a" text-anchor="middle">HOUSES</text>
+
+        <!-- Storehouse at forest -->
+        <rect x="260" y="335" width="22" height="22" fill="#8b6f3a" stroke="#0a0a0a" stroke-width="2"/>
+        <text x="180" y="343" font-family="monospace" font-size="8" fill="#5a5a5a" text-anchor="end">→ STOREHOUSE @ FOREST</text>
+
+        <!-- Mining camp at stone -->
+        <rect x="490" y="80" width="22" height="22" fill="#8b6f3a" stroke="#0a0a0a" stroke-width="2"/>
+        <text x="485" y="72" font-family="monospace" font-size="8" fill="#5a5a5a" text-anchor="end">MINING CAMP</text>
+
+        <!-- Barracks forward -->
+        <rect x="430" y="200" width="36" height="36" fill="#0a0a0a"/>
+        <text x="448" y="222" font-family="monospace" font-size="9" fill="#f5f3eb" text-anchor="middle" font-weight="bold">BAR</text>
+
+        <!-- Tower 1 (resource line) -->
+        <rect x="500" y="160" width="20" height="20" fill="#0a0a0a"/>
+        <polygon points="498,160 522,160 510,148" fill="#d83a1e"/>
+
+        <!-- Choke point east -->
+        <rect x="580" y="160" width="20" height="100" fill="#a89878"/>
+        <rect x="540" y="160" width="20" height="40" fill="#a89878"/>
+        <rect x="540" y="240" width="20" height="20" fill="#a89878"/>
+        <text x="560" y="280" font-family="monospace" font-size="9" fill="#5a4020" font-weight="bold" text-anchor="middle">CHOKE</text>
+
+        <!-- Wall at choke -->
+        <rect x="552" y="200" width="20" height="40" fill="#5a5a5a" stroke="#0a0a0a" stroke-width="1"/>
+        <text x="540" y="200" font-family="monospace" font-size="8" fill="#5a5a5a" text-anchor="end">WALL ↓</text>
+
+        <!-- Tower at choke -->
+        <rect x="525" y="195" width="20" height="20" fill="#0a0a0a"/>
+        <polygon points="523,195 547,195 535,183" fill="#d83a1e"/>
+        <rect x="525" y="225" width="20" height="20" fill="#0a0a0a"/>
+        <polygon points="523,225 547,225 535,213" fill="#d83a1e"/>
+
+        <!-- Fortress -->
+        <rect x="455" y="270" width="40" height="36" fill="#0a0a0a" stroke="#d83a1e" stroke-width="2"/>
+        <text x="475" y="293" font-family="monospace" font-size="10" fill="#f5f3eb" text-anchor="middle" font-weight="bold">FORT</text>
+
+        <!-- Merc camp forward -->
+        <rect x="370" y="60" width="34" height="30" fill="#d83a1e"/>
+        <text x="387" y="80" font-family="monospace" font-size="9" fill="#f5f3eb" text-anchor="middle" font-weight="bold">MERC</text>
+        <text x="387" y="50" font-family="monospace" font-size="8" fill="#d83a1e" text-anchor="middle">FORWARD</text>
+
+        <!-- Outposts on hills -->
+        <g>
+          <rect x="40" y="200" width="14" height="18" fill="#0a0a0a"/>
+          <polygon points="38,200 56,200 47,190" fill="#d83a1e"/>
+          <text x="47" y="232" font-family="monospace" font-size="8" fill="#5a5a5a" text-anchor="middle">OUTPOST</text>
+        </g>
+
+        <!-- Compass / Labels -->
+        <text x="300" y="14" font-family="monospace" font-size="12" font-weight="bold" text-anchor="middle">↑ ENEMY APPROACHES FROM EAST CHOKE</text>
+      </svg>
+    </div>
+    <div style="margin-top: 16px;">
+      <h3 class="sub">// Why this layout works</h3>
+      <ul>
+        <li><b>Cliffs at the back</b> — free walls on two sides. Only one direction to defend.</li>
+        <li><b>Farms ring the CC</b> — minimum walking time for food.</li>
+        <li><b>Storehouse AT the forest</b> — 3 steps from chopping to dropping.</li>
+        <li><b>Barracks forward</b> — between CC and the choke. Reinforcements arrive quickly.</li>
+        <li><b>Fort + 2 towers + wall at the choke</b> — kill box. Every attacker funnels here.</li>
+        <li><b>Merc camp far forward</b> — pizza delivery at the front line.</li>
+        <li><b>Outpost on the safe side</b> — vision for raids that try to come around.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- SPECIAL BUILDINGS -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">SPECIALS</span>
+    <span class="title">The Buildings You Skip</span>
+    <span class="tag">HUGE ROI · UNDERUSED</span>
+  </div>
+  <div class="block-body">
+    <p>These buildings give massive value but most beginners skip them. Adding them properly is a top-5 way to improve your win rate.</p>
+
+    <div class="b-grid">
+      <div class="b-card">
+        <div class="bname">🏛️ Temple</div>
+        <div class="brole">// Healing &amp; sustainment</div>
+        <p>Trains <b>healers</b> who passively heal nearby units. In 0 A.D., wounded units don't auto-heal — they stay damaged forever. Build 1 temple, train 3-5 healers, park them behind your standing army. Your army recovers HP between fights for free.</p>
+      </div>
+
+      <div class="b-card">
+        <div class="bname">🏪 Market</div>
+        <div class="brole">// Trade routes &amp; barter</div>
+        <p>Build <b>2 markets</b> — one home, one forward. <b>Trade carts</b> between them generate metal passively. Income equal to ~5-8 villagers, zero maintenance. Ptolemies have a trade bonus — even more efficient. Also lets you barter (food → metal in emergencies).</p>
+      </div>
+
+      <div class="b-card">
+        <div class="bname">🏯 Wonder</div>
+        <div class="brole">// Win condition + bonus</div>
+        <p>Massive Phase III building. Two functions: (1) passive civ bonus, (2) <b>Wonder Victory</b> — hold it for ~25 minutes, you auto-win. Use when ahead and want to close out, OR in a stalemate (forces opponent to attack). Only build if you can defend it.</p>
+      </div>
+
+      <div class="b-card">
+        <div class="bname">🏛️ Embassy</div>
+        <div class="brole">// Foreign mercenaries</div>
+        <p>Different from Ptolemies merc camp. Unlocks foreign units — Iberian skirmishers, Italic swordsmen, Celtic cavalry. Use to fill <b>composition gaps</b>. Iberian skirmishers especially are cheap and great. Pick one embassy; don't build all three.</p>
+      </div>
+
+      <div class="b-card">
+        <div class="bname">⚒️ Blacksmith</div>
+        <div class="brole">// Upgrade engine</div>
+        <p>Phase II, EARLY. Research weapon/armor +1 immediately, +2 mid-game, +3 late. Affects EVERY combat unit. Universal ROI. Not optional. (See VOL.05 for upgrade priority order.)</p>
+      </div>
+
+      <div class="b-card">
+        <div class="bname">🐎 Stable</div>
+        <div class="brole">// Cavalry production</div>
+        <p>Place near your forward base, not your home. Cav is harass + flank — they should spawn where they fight. Stable-specific upgrades are only worth it if you have 8+ of that cav type.</p>
+      </div>
+    </div>
+
+    <h3 class="sub">// Build priority for special buildings</h3>
+    <ol class="priority">
+      <li><span class="pnum">01</span><span><b>Blacksmith</b> — Phase II, early. Most important.</span><span class="ptag">ALWAYS</span></li>
+      <li><span class="pnum">02</span><span><b>Temple</b> — Phase II, for healers. Massive sustainment.</span><span class="ptag">ALWAYS</span></li>
+      <li><span class="pnum">03</span><span><b>Market</b> — Phase II, for trade income. Underused gold mine.</span><span class="ptag">ALWAYS</span></li>
+      <li><span class="pnum">04</span><span><b>Embassy</b> — Phase II/III, if you need a foreign unit type.</span><span class="ptag">CONDITIONAL</span></li>
+      <li><span class="pnum">05</span><span><b>Wonder</b> — Phase III, only if you can defend it.</span><span class="ptag">CONDITIONAL</span></li>
+    </ol>
+  </div>
+</section>
+
+<!-- MAP RESOURCES -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">MAP RES</span>
+    <span class="title">Special Map Resources</span>
+    <span class="tag">FREE STUFF · GO GET IT</span>
+  </div>
+  <div class="block-body">
+    <table>
+      <thead><tr><th>Resource</th><th>What it is</th><th>How to use</th></tr></thead>
+      <tbody>
+        <tr><td class="bldg">Treasure Chests</td><td>Randomly placed at game start. Give 100-300 of a random resource.</td><td>Send scout cav to grab them. Free resources, no work. Don't ignore.</td></tr>
+        <tr><td class="bldg">Hunt (deer, gazelle)</td><td>Free roaming animals. Each gives 50-100 food.</td><td>Cav can hunt safely. Faster than berries early game.</td></tr>
+        <tr><td class="bldg">Boar / Dangerous Hunt</td><td>100-200 food but bites back. Aggressive.</td><td>Lure with a tough unit, kill from range. Don't lose villagers to it.</td></tr>
+        <tr><td class="bldg">Berries</td><td>Bushes near your CC. ~250 food per bush.</td><td>Your starting food source. Run dry around minute 6 — be on farms by then.</td></tr>
+        <tr><td class="bldg">Fish (shore)</td><td>Schools of fish in water. Slow but bottomless food.</td><td>Build a dock, train fishing boats. Sustainable food forever.</td></tr>
+        <tr><td class="bldg">Ruins / Special features</td><td>Map-specific. Some give bonuses when garrisoned.</td><td>Worth scouting for. Check each map's quirks.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- EXPANSION -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">EXPAND</span>
+    <span class="title">When + Where to Expand</span>
+    <span class="tag">SECOND CC LOGIC</span>
+  </div>
+  <div class="block-body">
+    <h3 class="sub">// When</h3>
+    <p>Drop your second CC <b>when Phase II completes</b> (≈ minute 8-10). You're ready when you have ~40 villagers and steady gathering.</p>
+
+    <h3 class="sub">// The three criteria for the spot</h3>
+    <ol>
+      <li><b>Resource cluster nearby</b> — stone + metal + some food/wood within 15s walk</li>
+      <li><b>Defensible</b> — a choke, cliff, or natural barrier between it and the enemy</li>
+      <li><b>Inside the middle ring</b> — not so far you can't defend it (the trickle trap!)</li>
+    </ol>
+
+    <div class="rule-line"><b>If you can't get all three:</b> pick defensibility over resources. A second CC you can defend is worth more than a richer second CC that dies.</div>
+
+    <h3 class="sub">// Build order at the new CC</h3>
+    <ol>
+      <li>Drop the CC</li>
+      <li><b>IMMEDIATELY</b> build a tower next to it (within 30s walk)</li>
+      <li>Farms around the CC</li>
+      <li>Storehouse at the nearest forest</li>
+      <li>Barracks if you're going to fight here</li>
+    </ol>
+    <p>New CC with no tower = villagers die to a single cav raid. Tower first. Eco second.</p>
+  </div>
+</section>
+
+<!-- BAD LAYOUT MISTAKES -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">PITFALLS</span>
+    <span class="title">Layout Mistakes That Bleed</span>
+    <span class="tag">STOP DOING THESE</span>
+  </div>
+  <div class="block-body">
+    <ul class="mistakes">
+      <li><b>Storehouse 20+ tiles from the woodline.</b> Silent eco bleed every second.</li>
+      <li><b>Farms scattered around the map.</b> Women walking 15s when they should walk 2s.</li>
+      <li><b>Barracks deep in your base.</b> Reinforcements arrive too late to matter.</li>
+      <li><b>Towers at the base perimeter</b> instead of the choke. Same number of enemies shot, but no crossfire.</li>
+      <li><b>Walling your whole base.</b> Wasteful, slow, and your own units can't get out efficiently.</li>
+      <li><b>Forgetting to build storehouses at all.</b> Gather rate halves as the deposit is depleted nearby.</li>
+      <li><b>No Blacksmith / Temple / Market.</b> All three give huge ROI. Skipping them = playing handicapped.</li>
+      <li><b>Mercenary camp at home base.</b> Defeats the entire purpose. Push it forward.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ENDPLATE -->
+<section class="block" style="border-color:var(--accent); border-width:6px">
+  <div class="block-header" style="background:var(--accent)">
+    <span class="num">ENDPLATE</span>
+    <span class="title">Layout Habits</span>
+    <span class="tag">MEMORIZE</span>
+  </div>
+  <div class="block-body">
+    <ol>
+      <li><b>Every building has a walking-time cost.</b> Place where it's used.</li>
+      <li><b>Farms ring the CC.</b> Storehouses kiss the forest.</li>
+      <li><b>Barracks forward. Merc camp further forward.</b></li>
+      <li><b>Walls only at chokes. Use terrain for the rest.</b></li>
+      <li><b>Towers at chokes, not perimeter.</b> Overlapping fire.</li>
+      <li><b>Build Blacksmith, Temple, Market</b> by Phase II. Every game.</li>
+      <li><b>Grab treasure chests early.</b> Free resources, no excuse.</li>
+      <li><b>Second CC: defensible &gt; rich.</b> Tower before farms.</li>
+    </ol>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div>END OF DOCUMENT</div>
+  <div style="margin-top: 8px;">FIELD MANUAL // BASE LAYOUT + BUILDINGS // PRINTED FOR INTERNAL USE</div>
+</footer>
+
+</body>
+</html>

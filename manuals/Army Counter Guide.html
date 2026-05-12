@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ARMY COUNTER GUIDE // 0 A.D.</title>
+<style>
+  :root {
+    --bg: #e8e6df;
+    --ink: #0a0a0a;
+    --paper: #f5f3eb;
+    --accent: #d83a1e;
+    --blue: #2050a0;
+    --green: #2a7040;
+    --mute: #5a5a5a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--ink); }
+  body {
+    font-family: "JetBrains Mono", "SF Mono", "Menlo", "Consolas", monospace;
+    line-height: 1.5;
+  }
+
+  /* MASTHEAD */
+  .masthead {
+    border-bottom: 6px solid var(--ink);
+    padding: 24px 40px 16px;
+    background: var(--paper);
+  }
+  .nameplate {
+    font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
+    display: flex; justify-content: space-between;
+    border-bottom: 1px solid var(--ink); padding-bottom: 8px; margin-bottom: 16px;
+  }
+  .masthead h1 {
+    font-size: 64px; font-weight: 900; letter-spacing: -2px; line-height: 0.9;
+    text-transform: uppercase;
+  }
+  .masthead h1 .slash { color: var(--accent); }
+  .masthead .tagline {
+    margin-top: 12px;
+    font-size: 14px; text-transform: uppercase; letter-spacing: 1px;
+    border-top: 1px solid var(--ink); padding-top: 12px;
+    display: grid; grid-template-columns: repeat(4, 1fr);
+  }
+  .masthead .tagline span { border-right: 1px solid var(--ink); padding-right: 12px; }
+  .masthead .tagline span:last-child { border-right: 0; }
+
+  main { padding: 0 40px 60px; max-width: 1100px; margin: 0 auto; }
+
+  /* BLOCK */
+  .block {
+    border: 3px solid var(--ink);
+    margin-top: 32px;
+    background: var(--paper);
+  }
+  .block-header {
+    background: var(--ink); color: var(--paper);
+    padding: 16px 24px;
+    display: flex; justify-content: space-between; align-items: baseline;
+    border-bottom: 3px solid var(--ink);
+  }
+  .block-header .num {
+    font-size: 14px; letter-spacing: 3px; opacity: 0.6;
+  }
+  .block-header .title {
+    font-size: 28px; font-weight: 900; letter-spacing: -0.5px;
+    text-transform: uppercase; flex: 1; padding: 0 24px;
+  }
+  .block-header .tag {
+    font-size: 12px; letter-spacing: 2px;
+    border-left: 1px solid var(--paper); padding-left: 16px;
+  }
+  .block-body { padding: 24px; }
+
+  h3.sub {
+    font-size: 12px; letter-spacing: 2.5px; text-transform: uppercase;
+    border-bottom: 2px solid var(--ink); padding-bottom: 4px; margin: 16px 0 8px;
+    font-weight: 700;
+  }
+  h3.sub:first-child { margin-top: 0; }
+
+  p { font-size: 13px; margin: 6px 0; }
+  ul, ol { padding-left: 20px; font-size: 13px; }
+  li { margin: 4px 0; }
+  b { font-weight: 700; }
+
+  .rule-line {
+    background: var(--ink); color: var(--paper);
+    padding: 10px 14px; margin: 10px 0;
+    border-left: 6px solid var(--accent);
+    font-size: 13px;
+  }
+  .rule-line b { color: var(--accent); }
+
+  /* TRIANGLE */
+  .triangle-wrap { display: flex; justify-content: center; padding: 16px 0; }
+  .triangle-wrap svg { max-width: 500px; width: 100%; height: auto; }
+
+  /* UNIT TABLE */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; border: 2px solid var(--ink); }
+  th, td { padding: 10px 12px; text-align: left; border: 1px solid var(--ink); vertical-align: top; }
+  th { background: var(--ink); color: var(--paper); text-transform: uppercase; letter-spacing: 1.5px; font-size: 11px; }
+  td.unit { font-weight: 700; white-space: nowrap; }
+  .good { color: var(--green); font-weight: 700; }
+  .bad { color: var(--accent); font-weight: 700; }
+
+  /* SCENARIO BLOCK */
+  .scenario {
+    border: 2px solid var(--ink);
+    margin: 16px 0;
+    background: var(--paper);
+  }
+  .scenario-header {
+    background: var(--accent); color: var(--paper);
+    padding: 10px 14px;
+    font-size: 13px; text-transform: uppercase; letter-spacing: 2px; font-weight: 700;
+  }
+  .scenario-body { padding: 16px 18px; }
+  .scenario-body ol { padding-left: 22px; }
+
+  /* ICON LEGEND */
+  .icon-row {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 0;
+    border-top: 2px solid var(--ink); border-left: 2px solid var(--ink);
+  }
+  .icon-cell {
+    border-right: 2px solid var(--ink); border-bottom: 2px solid var(--ink);
+    padding: 14px; text-align: center;
+  }
+  .icon-cell svg { width: 56px; height: 56px; display: block; margin: 0 auto 8px; }
+  .icon-cell .iname { font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; }
+  .icon-cell .irole { font-size: 10px; color: var(--mute); margin-top: 2px; }
+
+  /* CAV JOBS GRID */
+  .jobs {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 0;
+    border-top: 2px solid var(--ink); border-left: 2px solid var(--ink);
+    margin: 12px 0;
+  }
+  .jobs > div {
+    border-right: 2px solid var(--ink); border-bottom: 2px solid var(--ink);
+    padding: 14px;
+  }
+  .jobs h4 {
+    font-size: 13px; text-transform: uppercase; letter-spacing: 2px;
+    color: var(--accent); border-bottom: 1px solid var(--ink);
+    padding-bottom: 4px; margin-bottom: 6px;
+  }
+  .jobs p { font-size: 12px; }
+
+  /* ONE LINER RULES */
+  .rules-list { list-style: none; padding: 0; }
+  .rules-list li {
+    padding: 10px 14px;
+    border: 2px solid var(--ink);
+    margin-bottom: 6px;
+    font-size: 14px;
+    background: var(--paper);
+  }
+  .rules-list li:nth-child(odd) { background: var(--bg); }
+  .rules-list li::before {
+    content: "//";
+    color: var(--accent);
+    font-weight: 700;
+    margin-right: 8px;
+  }
+
+  /* FOOTER */
+  .footer {
+    margin-top: 48px;
+    border-top: 6px solid var(--ink);
+    padding: 24px 40px;
+    text-align: center;
+    font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--mute);
+  }
+
+  @media (max-width: 800px) {
+    .icon-row { grid-template-columns: repeat(2, 1fr); }
+    .jobs { grid-template-columns: 1fr; }
+  }
+
+  /* VOLUME NAV */
+  .volume-nav {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr) 48px;
+    align-items: center;
+    gap: 0;
+    background: var(--ink);
+    color: var(--paper);
+    border-bottom: 3px solid var(--ink);
+  }
+  .volume-nav a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .volume-arrow {
+    display: grid;
+    place-items: center;
+    min-height: 48px;
+    border-right: 1px solid var(--paper);
+    font-size: 24px;
+    font-weight: 900;
+  }
+  .volume-arrow.next {
+    border-right: 0;
+    border-left: 1px solid var(--paper);
+  }
+  .volume-title {
+    min-width: 0;
+    padding: 12px 16px;
+    text-align: center;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .volume-arrow:hover,
+  .volume-arrow:focus-visible {
+    background: var(--accent);
+    outline: 0;
+  }
+
+</style>
+</head>
+<body>
+<nav class="volume-nav" aria-label="Volume navigation">
+  <a class="volume-arrow prev" href="Base%20Layout%20+%20Buildings.html" aria-label="Previous volume">&lt;</a>
+  <div class="volume-title">Army Counter Guide</div>
+  <a class="volume-arrow next" href="Ptolemies%20Playbook.html" aria-label="Next volume">&gt;</a>
+</nav>
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <div class="nameplate">
+    <span>VOL.00 — TUE 12.MAY.2026</span>
+    <span>FIELD MANUAL // COUNTERS // 0 A.D.</span>
+    <span>NO.000</span>
+  </div>
+  <h1>ARMY<span class="slash">/</span>COUNTERS</h1>
+  <div class="tagline">
+    <span>ROCK · PAPER · SCISSORS</span>
+    <span>SPEARS STOP HORSES</span>
+    <span>HORSES KILL ARCHERS</span>
+    <span>READ BEFORE PLAY</span>
+  </div>
+</header>
+
+<main>
+
+<!-- THE TRIANGLE -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">CORE</span>
+    <span class="title">The Counter Triangle</span>
+    <span class="tag">MEMORIZE THIS</span>
+  </div>
+  <div class="block-body">
+    <p>Every army boils down to three roles. Each beats one, loses to one.</p>
+
+    <div class="triangle-wrap">
+      <svg viewBox="0 0 500 380">
+        <!-- Triangle background -->
+        <polygon points="250,40 460,330 40,330" fill="none" stroke="#0a0a0a" stroke-width="3"/>
+
+        <!-- Melee node -->
+        <rect x="195" y="20" width="110" height="60" fill="#0a0a0a"/>
+        <text x="250" y="42" font-family="monospace" font-size="12" font-weight="bold" fill="#f5f3eb" text-anchor="middle">MELEE</text>
+        <text x="250" y="58" font-family="monospace" font-size="10" fill="#f5f3eb" text-anchor="middle">INFANTRY</text>
+        <text x="250" y="72" font-family="monospace" font-size="9" fill="#d83a1e" text-anchor="middle">pikes · spears · swords</text>
+
+        <!-- Ranged node -->
+        <rect x="395" y="310" width="120" height="60" fill="#0a0a0a"/>
+        <text x="455" y="332" font-family="monospace" font-size="12" font-weight="bold" fill="#f5f3eb" text-anchor="middle">RANGED</text>
+        <text x="455" y="348" font-family="monospace" font-size="9" fill="#d83a1e" text-anchor="middle">archers · slingers</text>
+        <text x="455" y="362" font-family="monospace" font-size="9" fill="#d83a1e" text-anchor="middle">skirmishers</text>
+
+        <!-- Cavalry node -->
+        <rect x="-15" y="310" width="120" height="60" fill="#0a0a0a"/>
+        <text x="45" y="332" font-family="monospace" font-size="12" font-weight="bold" fill="#f5f3eb" text-anchor="middle">CAVALRY</text>
+        <text x="45" y="348" font-family="monospace" font-size="9" fill="#d83a1e" text-anchor="middle">horse · camels</text>
+        <text x="45" y="362" font-family="monospace" font-size="9" fill="#d83a1e" text-anchor="middle">elephants</text>
+
+        <!-- Arrows showing dominance -->
+        <!-- Melee beats Cavalry -->
+        <g stroke="#d83a1e" stroke-width="3" fill="none">
+          <path d="M210,90 L100,300"/>
+          <polygon points="103,294 95,308 110,306" fill="#d83a1e"/>
+        </g>
+        <text x="130" y="200" font-family="monospace" font-size="10" font-weight="bold" fill="#d83a1e" transform="rotate(-60, 130, 200)">BEATS</text>
+
+        <!-- Cavalry beats Ranged -->
+        <g stroke="#d83a1e" stroke-width="3" fill="none">
+          <path d="M115,340 L390,340"/>
+          <polygon points="385,335 400,340 385,346" fill="#d83a1e"/>
+        </g>
+        <text x="250" y="358" font-family="monospace" font-size="10" font-weight="bold" fill="#d83a1e" text-anchor="middle">BEATS</text>
+
+        <!-- Ranged beats Melee -->
+        <g stroke="#d83a1e" stroke-width="3" fill="none">
+          <path d="M420,300 L295,90"/>
+          <polygon points="298,98 290,82 305,86" fill="#d83a1e"/>
+        </g>
+        <text x="380" y="200" font-family="monospace" font-size="10" font-weight="bold" fill="#d83a1e" transform="rotate(60, 380, 200)">BEATS</text>
+      </svg>
+    </div>
+
+    <div class="rule-line"><b>Mental shortcut:</b> Spears stop horses. Horses run down archers. Archers shred spears. <b>That's the whole game.</b></div>
+  </div>
+</section>
+
+<!-- UNIT LEGEND -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">REF.01</span>
+    <span class="title">Unit Legend</span>
+    <span class="tag">FIVE ROLES</span>
+  </div>
+  <div class="block-body">
+    <div class="icon-row">
+      <div class="icon-cell">
+        <svg viewBox="0 0 64 64">
+          <rect x="26" y="10" width="12" height="12" fill="#0a0a0a"/>
+          <rect x="22" y="22" width="20" height="22" fill="#0a0a0a"/>
+          <rect x="18" y="44" width="8" height="14" fill="#0a0a0a"/>
+          <rect x="38" y="44" width="8" height="14" fill="#0a0a0a"/>
+          <rect x="42" y="14" width="4" height="32" fill="#0a0a0a"/>
+          <rect x="38" y="10" width="16" height="6" fill="#d83a1e"/>
+        </svg>
+        <div class="iname">Worker</div>
+        <div class="irole">/ eco</div>
+      </div>
+      <div class="icon-cell">
+        <svg viewBox="0 0 64 64">
+          <rect x="26" y="10" width="12" height="12" fill="#0a0a0a"/>
+          <rect x="22" y="22" width="20" height="22" fill="#0a0a0a"/>
+          <rect x="18" y="44" width="8" height="14" fill="#0a0a0a"/>
+          <rect x="38" y="44" width="8" height="14" fill="#0a0a0a"/>
+          <rect x="10" y="4" width="3" height="56" fill="#0a0a0a"/>
+          <polygon points="8,4 15,4 11.5,-2" fill="#d83a1e"/>
+          <rect x="44" y="24" width="14" height="20" fill="none" stroke="#0a0a0a" stroke-width="3"/>
+        </svg>
+        <div class="iname">Spearman</div>
+        <div class="irole">/ anti-cav</div>
+      </div>
+      <div class="icon-cell">
+        <svg viewBox="0 0 64 64">
+          <rect x="26" y="10" width="12" height="12" fill="#0a0a0a"/>
+          <rect x="22" y="22" width="20" height="22" fill="#0a0a0a"/>
+          <rect x="18" y="44" width="8" height="14" fill="#0a0a0a"/>
+          <rect x="38" y="44" width="8" height="14" fill="#0a0a0a"/>
+          <path d="M46,10 Q58,32 46,54" fill="none" stroke="#0a0a0a" stroke-width="3"/>
+          <line x1="46" y1="10" x2="46" y2="54" stroke="#0a0a0a" stroke-width="1.5"/>
+          <line x1="40" y1="32" x2="62" y2="32" stroke="#d83a1e" stroke-width="2"/>
+          <polygon points="58,28 64,32 58,36" fill="#d83a1e"/>
+        </svg>
+        <div class="iname">Archer</div>
+        <div class="irole">/ ranged DPS</div>
+      </div>
+      <div class="icon-cell">
+        <svg viewBox="0 0 64 64">
+          <rect x="6" y="34" width="46" height="14" fill="#0a0a0a"/>
+          <rect x="50" y="24" width="10" height="14" fill="#0a0a0a"/>
+          <rect x="8" y="48" width="6" height="14" fill="#0a0a0a"/>
+          <rect x="18" y="48" width="6" height="14" fill="#0a0a0a"/>
+          <rect x="34" y="48" width="6" height="14" fill="#0a0a0a"/>
+          <rect x="44" y="48" width="6" height="14" fill="#0a0a0a"/>
+          <rect x="24" y="14" width="12" height="12" fill="#0a0a0a"/>
+          <rect x="22" y="26" width="14" height="12" fill="#0a0a0a"/>
+          <line x1="36" y1="4" x2="60" y2="22" stroke="#d83a1e" stroke-width="3"/>
+        </svg>
+        <div class="iname">Cavalry</div>
+        <div class="irole">/ scout + raid</div>
+      </div>
+      <div class="icon-cell">
+        <svg viewBox="0 0 64 64">
+          <rect x="6" y="32" width="52" height="14" fill="#0a0a0a"/>
+          <rect x="10" y="22" width="44" height="10" fill="#0a0a0a"/>
+          <line x1="14" y1="28" x2="48" y2="6" stroke="#0a0a0a" stroke-width="5"/>
+          <rect x="44" y="2" width="12" height="8" fill="#d83a1e"/>
+          <circle cx="16" cy="52" r="8" fill="none" stroke="#0a0a0a" stroke-width="3"/>
+          <circle cx="48" cy="52" r="8" fill="none" stroke="#0a0a0a" stroke-width="3"/>
+        </svg>
+        <div class="iname">Siege</div>
+        <div class="irole">/ anti-building</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROSTER TABLE -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">REF.02</span>
+    <span class="title">The Full Roster</span>
+    <span class="tag">WHO COUNTERS WHO</span>
+  </div>
+  <div class="block-body">
+    <table>
+      <thead>
+        <tr><th>Unit</th><th>Role</th><th>Strong vs</th><th>Weak vs</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="unit">Spearman</td><td>Cheap anti-cav</td><td class="good">Cavalry, Elephants</td><td class="bad">Archers, Swordsmen</td></tr>
+        <tr><td class="unit">Pikeman</td><td>Elite frontline</td><td class="good">Cavalry (huge bonus)</td><td class="bad">Swordsmen, Ranged, Siege</td></tr>
+        <tr><td class="unit">Swordsman</td><td>Heavy melee DPS</td><td class="good">Spearmen, Pikemen, Buildings</td><td class="bad">Cavalry, Skirmishers (kited)</td></tr>
+        <tr><td class="unit">Archer</td><td>Mass ranged DPS</td><td class="good">Melee infantry</td><td class="bad">Cavalry charges</td></tr>
+        <tr><td class="unit">Skirmisher</td><td>Mobile harasser</td><td class="good">Swordsmen, Slow melee</td><td class="bad">Archers (outranged), Cavalry</td></tr>
+        <tr><td class="unit">Slinger</td><td>Anti-building / anti-ranged</td><td class="good">Buildings, other Ranged</td><td class="bad">Cavalry, Melee close-up</td></tr>
+        <tr><td class="unit">Cav (Spear)</td><td>Anti-cav harasser</td><td class="good">Other Cavalry, Ranged</td><td class="bad">Pikemen, Spearmen</td></tr>
+        <tr><td class="unit">Cav (Sword)</td><td>Raid &amp; flank</td><td class="good">Ranged, Workers, Skirmishers</td><td class="bad">Pikemen, Spearmen</td></tr>
+        <tr><td class="unit">Cav (Javelin)</td><td>Hit-and-run</td><td class="good">Workers, isolated units</td><td class="bad">Mass Archers, Pikemen</td></tr>
+        <tr><td class="unit">War Elephant</td><td>Tank / building crusher</td><td class="good">Melee blobs, Buildings</td><td class="bad">Pikemen, Mass Ranged, Fire</td></tr>
+        <tr><td class="unit">Champion</td><td>Elite anything</td><td class="good">Their counter-type's citizen units</td><td class="bad">Their own role's counter, cost</td></tr>
+        <tr><td class="unit">Siege</td><td>Anti-building</td><td class="good">Walls, Towers, Buildings</td><td class="bad">EVERYTHING ELSE — esp. Cav</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- CAVALRY JOBS -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">REF.03</span>
+    <span class="title">When is Cavalry Useful?</span>
+    <span class="tag">FOUR JOBS</span>
+  </div>
+  <div class="block-body">
+    <p>Cavalry is not your main combat unit. It's a tool. Use it for specific jobs.</p>
+
+    <div class="jobs">
+      <div>
+        <h4>// JOB 01 — SCOUTING</h4>
+        <p>Find their base, expansions, idle armies. Always have 1-2 horses on patrol. <b>Replace instantly if killed.</b></p>
+      </div>
+      <div>
+        <h4>// JOB 02 — RAID WORKERS</h4>
+        <p>Fastest unit, picks off villagers far from base. The single biggest source of <i>"why am I losing"</i> if you don't do this.</p>
+      </div>
+      <div>
+        <h4>// JOB 03 — SNIPE SIEGE</h4>
+        <p>Their ram rolls up. Your cav charges from behind. Siege has zero melee defense. <b>Free kill.</b></p>
+      </div>
+      <div>
+        <h4>// JOB 04 — FLANK RANGED</h4>
+        <p>Ride around the pike wall and crash into the archer line behind it. Kills the DPS, the pikes become harmless.</p>
+      </div>
+    </div>
+
+    <div class="rule-line"><b>NEVER:</b> charge cav into pikes. You will lose 80% of them in 5 seconds.</div>
+  </div>
+</section>
+
+<!-- SCENARIOS -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">SCENARIOS</span>
+    <span class="title">I See X — What Do I Do?</span>
+    <span class="tag">EMERGENCY PROCEDURES</span>
+  </div>
+  <div class="block-body">
+
+    <div class="scenario">
+      <div class="scenario-header">// SEE: Cavalry approaching base</div>
+      <div class="scenario-body">
+        <ol>
+          <li><b>Garrison workers immediately</b> — houses, towers, CC. One hotkey saves your eco.</li>
+          <li><b>Train spearmen / pikemen NOW.</b> Even 5-6 spears in a clump scares cav off.</li>
+          <li><b>Pull them under a tower.</b> Towers + spears = cav graveyard.</li>
+          <li><b>Don't chase.</b> Cav is faster. They'll kite back and re-raid elsewhere.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="scenario">
+      <div class="scenario-header">// SEE: Wave of archers / skirmishers</div>
+      <div class="scenario-body">
+        <ol>
+          <li><b>Send cavalry around the flank</b> — never engage ranged from the front, they kite.</li>
+          <li>No cav? <b>Charge with swordsmen</b> through them; ranged melts in melee.</li>
+          <li><b>Don't fight with spearmen</b> head-on — archers eat spears alive.</li>
+          <li><b>Towers help.</b> Ranged has to stop to shoot, towers out-DPS them.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="scenario">
+      <div class="scenario-header">// SEE: Pikeman block / phalanx pushing in</div>
+      <div class="scenario-body">
+        <ol>
+          <li><b>Don't melee them.</b> Pikes hit first and hard.</li>
+          <li><b>Slingers + skirmishers</b> at range — pikes are slow, kite them while you shoot.</li>
+          <li><b>Swordsmen or elephants</b> for a head-on break if you must.</li>
+          <li><b>Look for siege behind the pikes</b> — that's the real threat. Pikes are bodyguard.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="scenario">
+      <div class="scenario-header">// SEE: Siege (rams, helepolis, towers)</div>
+      <div class="scenario-body">
+        <ol>
+          <li><b>Cavalry charge — NOW.</b> Siege has no melee defense. Your cav deletes it.</li>
+          <li>If already at wall, sally out a small squad from a gate. Don't let it work.</li>
+          <li><b>Garrison the wall section</b> being attacked — archers inside towers shoot back.</li>
+          <li>After siege dies, <b>retreat.</b> Don't get drawn into the full engagement.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="scenario">
+      <div class="scenario-header">// SEE: War elephants lumbering at you</div>
+      <div class="scenario-body">
+        <ol>
+          <li><b>Pikemen, lots of them.</b> Pikes have huge bonus damage vs elephants.</li>
+          <li><b>Mass ranged from distance</b> — slingers especially.</li>
+          <li><b>Don't bunch up.</b> Elephants do splash/trample damage. Spread out.</li>
+          <li><b>Towers do bonus damage</b> to elephants. Use them.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="scenario">
+      <div class="scenario-header">// SEE: Mixed army (the realistic case)</div>
+      <div class="scenario-body">
+        <p>Real armies are combined arms: pikes front, archers back, cav on wings, siege in rear. You can't counter all of it. <b>Pick a role to win:</b></p>
+        <ul>
+          <li><b>Kill the siege first</b> if your walls are at stake</li>
+          <li><b>Flank the archers</b> with cav — kills the DPS, pikes become harmless</li>
+          <li><b>Retreat into kill zone</b> (towers + chokes) and attrition them</li>
+        </ul>
+        <div class="rule-line" style="margin-top:10px"><b>Fundamental defense move:</b> let them attack into your towers + walls + garrisoned ranged. You win the trade just by existing there.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ONE LINER RULES -->
+<section class="block" style="border-color:var(--accent); border-width:6px">
+  <div class="block-header" style="background:var(--accent)">
+    <span class="num">ENDPLATE</span>
+    <span class="title">Rules to Remember</span>
+    <span class="tag">MEMORIZE</span>
+  </div>
+  <div class="block-body">
+    <ul class="rules-list">
+      <li>Spears stop horses. Pikes stop them harder.</li>
+      <li>Cavalry kills anything that can't kill it back fast.</li>
+      <li>Ranged beats melee — unless melee gets in their face.</li>
+      <li>Siege dies to anything but walls.</li>
+      <li>Garrisoning workers is free defense. Use it every time.</li>
+      <li>Towers triple the value of whatever's inside them.</li>
+      <li>The army that fights on its own terrain wins.</li>
+      <li>Real armies are mixed. Pick a role to win, not the whole fight.</li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div>END OF DOCUMENT</div>
+  <div style="margin-top: 8px;">FIELD MANUAL // COUNTERS // PRINTED FOR INTERNAL USE</div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ECONOMY + UPGRADES // 0 A.D.</title>
+<style>
+  :root {
+    --bg: #e8e6df;
+    --ink: #0a0a0a;
+    --paper: #f5f3eb;
+    --accent: #d83a1e;
+    --blue: #2050a0;
+    --green: #2a7040;
+    --food: #c84030;
+    --wood: #5a8040;
+    --stone: #708090;
+    --metal: #b88030;
+    --mute: #5a5a5a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--ink); }
+  body {
+    font-family: "JetBrains Mono", "SF Mono", "Menlo", "Consolas", monospace;
+    line-height: 1.5;
+  }
+
+  .masthead {
+    border-bottom: 6px solid var(--ink);
+    padding: 24px 40px 16px;
+    background: var(--paper);
+  }
+  .nameplate {
+    font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
+    display: flex; justify-content: space-between;
+    border-bottom: 1px solid var(--ink); padding-bottom: 8px; margin-bottom: 16px;
+  }
+  .masthead h1 {
+    font-size: 64px; font-weight: 900; letter-spacing: -2px; line-height: 0.9;
+    text-transform: uppercase;
+  }
+  .masthead h1 .slash { color: var(--accent); }
+  .masthead .tagline {
+    margin-top: 12px;
+    font-size: 14px; text-transform: uppercase; letter-spacing: 1px;
+    border-top: 1px solid var(--ink); padding-top: 12px;
+    display: grid; grid-template-columns: repeat(4, 1fr);
+  }
+  .masthead .tagline span { border-right: 1px solid var(--ink); padding-right: 12px; }
+  .masthead .tagline span:last-child { border-right: 0; }
+
+  main { padding: 0 40px 60px; max-width: 1100px; margin: 0 auto; }
+
+  .block {
+    border: 3px solid var(--ink);
+    margin-top: 32px;
+    background: var(--paper);
+  }
+  .block-header {
+    background: var(--ink); color: var(--paper);
+    padding: 16px 24px;
+    display: flex; justify-content: space-between; align-items: baseline;
+    border-bottom: 3px solid var(--ink);
+  }
+  .block-header .num { font-size: 14px; letter-spacing: 3px; opacity: 0.6; }
+  .block-header .title {
+    font-size: 28px; font-weight: 900; letter-spacing: -0.5px;
+    text-transform: uppercase; flex: 1; padding: 0 24px;
+  }
+  .block-header .tag {
+    font-size: 12px; letter-spacing: 2px;
+    border-left: 1px solid var(--paper); padding-left: 16px;
+  }
+  .block-body { padding: 24px; }
+
+  h3.sub {
+    font-size: 12px; letter-spacing: 2.5px; text-transform: uppercase;
+    border-bottom: 2px solid var(--ink); padding-bottom: 4px; margin: 16px 0 8px;
+    font-weight: 700;
+  }
+  h3.sub:first-child { margin-top: 0; }
+
+  p { font-size: 13px; margin: 6px 0; }
+  ul, ol { padding-left: 20px; font-size: 13px; }
+  li { margin: 4px 0; }
+  b { font-weight: 700; }
+
+  .rule-line {
+    background: var(--ink); color: var(--paper);
+    padding: 10px 14px; margin: 10px 0;
+    border-left: 6px solid var(--accent);
+    font-size: 13px;
+  }
+  .rule-line b { color: var(--accent); }
+
+  /* RESOURCE CARDS */
+  .res-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border-top: 2px solid var(--ink); border-left: 2px solid var(--ink); }
+  .res-cell { border-right: 2px solid var(--ink); border-bottom: 2px solid var(--ink); padding: 16px; }
+  .res-cell .rname { font-size: 14px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
+  .res-cell .rrole { font-size: 11px; color: var(--mute); margin-top: 2px; text-transform: uppercase; letter-spacing: 1px; }
+  .res-cell .rdesc { font-size: 12px; margin-top: 8px; }
+  .res-cell.food .rname { color: var(--food); }
+  .res-cell.wood .rname { color: var(--wood); }
+  .res-cell.stone .rname { color: var(--stone); }
+  .res-cell.metal .rname { color: var(--metal); }
+
+  /* PHASE CURVES */
+  .curve-wrap { padding: 16px 0; }
+  .curve-row { margin-bottom: 16px; }
+  .curve-row .clbl { font-size: 12px; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; margin-bottom: 6px; }
+  .curve-bar { display: flex; height: 36px; border: 2px solid var(--ink); }
+  .curve-seg {
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 700; font-size: 12px;
+    border-right: 1px solid var(--ink);
+  }
+  .curve-seg:last-child { border-right: 0; }
+  .seg-food { background: var(--food); }
+  .seg-wood { background: var(--wood); }
+  .seg-stone { background: var(--stone); }
+  .seg-metal { background: var(--metal); }
+
+  /* TRIPWIRE */
+  .tripwires { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border-top: 2px solid var(--ink); border-left: 2px solid var(--ink); margin: 12px 0; }
+  .tripwires > div { border-right: 2px solid var(--ink); border-bottom: 2px solid var(--ink); padding: 14px; text-align: center; }
+  .trip-res { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; }
+  .trip-val { font-size: 28px; font-weight: 900; margin: 6px 0; color: var(--accent); }
+  .trip-do { font-size: 11px; color: var(--mute); }
+
+  /* TIER UNLOCKS */
+  .tier-stack {
+    display: grid; grid-template-columns: 1fr; border: 3px solid var(--ink); margin: 12px 0;
+  }
+  .tier-row { display: grid; grid-template-columns: 100px 1fr 100px; border-bottom: 2px solid var(--ink); min-height: 80px; }
+  .tier-row:last-child { border-bottom: 0; }
+  .tier-num { background: var(--ink); color: var(--paper); display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 2px solid var(--ink); }
+  .tier-num .pnum { font-size: 28px; font-weight: 900; color: var(--accent); line-height: 1; }
+  .tier-num .plbl { font-size: 10px; letter-spacing: 2px; margin-top: 2px; }
+  .tier-body { padding: 12px 16px; }
+  .tier-body .tlbl { font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: var(--accent); font-weight: 700; }
+  .tier-body p { font-size: 12px; margin-top: 4px; }
+  .tier-time { background: var(--bg); display: flex; align-items: center; justify-content: center; border-left: 2px solid var(--ink); font-weight: 700; font-size: 13px; }
+
+  /* UPGRADE ROI LIST */
+  .roi-list { padding: 0; list-style: none; }
+  .roi-list li {
+    border: 2px solid var(--ink);
+    margin-bottom: 6px;
+    padding: 10px 14px;
+    display: grid; grid-template-columns: 40px 1fr 100px;
+    align-items: center;
+    background: var(--paper);
+  }
+  .roi-list .rnum { font-size: 20px; font-weight: 900; color: var(--accent); }
+  .roi-list .rtxt { font-size: 13px; }
+  .roi-list .rtag { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; text-align: right; font-weight: 700; padding: 4px 8px; border: 1px solid var(--ink); }
+  .roi-list .always { background: var(--green); color: var(--paper); border-color: var(--green); }
+  .roi-list .usually { background: #b88030; color: var(--paper); border-color: #b88030; }
+  .roi-list .conditional { background: var(--bg); }
+  .roi-list .skip { background: var(--accent); color: var(--paper); border-color: var(--accent); }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--ink); }
+  th { background: var(--ink); color: var(--paper); text-transform: uppercase; letter-spacing: 1.5px; font-size: 11px; }
+
+  .footer {
+    margin-top: 48px;
+    border-top: 6px solid var(--ink);
+    padding: 24px 40px;
+    text-align: center;
+    font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--mute);
+  }
+
+  @media (max-width: 800px) {
+    .res-grid, .tripwires { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* VOLUME NAV */
+  .volume-nav {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr) 48px;
+    align-items: center;
+    gap: 0;
+    background: var(--ink);
+    color: var(--paper);
+    border-bottom: 3px solid var(--ink);
+  }
+  .volume-nav a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .volume-arrow {
+    display: grid;
+    place-items: center;
+    min-height: 48px;
+    border-right: 1px solid var(--paper);
+    font-size: 24px;
+    font-weight: 900;
+  }
+  .volume-arrow.next {
+    border-right: 0;
+    border-left: 1px solid var(--paper);
+  }
+  .volume-title {
+    min-width: 0;
+    padding: 12px 16px;
+    text-align: center;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .volume-arrow:hover,
+  .volume-arrow:focus-visible {
+    background: var(--accent);
+    outline: 0;
+  }
+
+</style>
+</head>
+<body>
+<nav class="volume-nav" aria-label="Volume navigation">
+  <a class="volume-arrow prev" href="Scouting.html" aria-label="Previous volume">&lt;</a>
+  <div class="volume-title">Economy + Upgrades</div>
+  <a class="volume-arrow next" href="Map%20Reading.html" aria-label="Next volume">&gt;</a>
+</nav>
+
+<header class="masthead">
+  <div class="nameplate">
+    <span>VOL.05 — TUE 12.MAY.2026</span>
+    <span>FIELD MANUAL // ECONOMY + UPGRADES // 0 A.D.</span>
+    <span>NO.005</span>
+  </div>
+  <h1>ECONOMY<span class="slash">+</span>UPGRADES</h1>
+  <div class="tagline">
+    <span>FLOW NOT STOCKPILE</span>
+    <span>SPEND OR BLEED</span>
+    <span>UPGRADES ARE PROFIT</span>
+    <span>MERCS ARE PIZZA</span>
+  </div>
+</header>
+
+<main>
+
+<!-- DOCTRINE -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">DOCTRINE</span>
+    <span class="title">Three Laws of Economy</span>
+    <span class="tag">READ FIRST</span>
+  </div>
+  <div class="block-body">
+
+    <div class="rule-line"><b>LAW 01 —</b> Economy is <b>FLOW, not STOCKPILE.</b> A bank of 2000 wood is a frozen economy. Income → spending → income → spending. Don't hoard.</div>
+
+    <div class="rule-line"><b>LAW 02 —</b> Every upgrade is <b>profit.</b> Most pay back in 60-90 seconds. Not researching them = leaving free resources on the table every minute.</div>
+
+    <div class="rule-line"><b>LAW 03 —</b> Upgrades only matter if you have units to benefit. <b>Buy bodies before you buy boosts.</b> 3 units with a buff &lt; 6 units without.</div>
+  </div>
+</section>
+
+<!-- THE FOUR RESOURCES -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">REF.01</span>
+    <span class="title">The Four Resources</span>
+    <span class="tag">EACH HAS A JOB</span>
+  </div>
+  <div class="block-body">
+    <p>Resources aren't interchangeable. Each does a specific job. Knowing which you need shapes what you build.</p>
+    <div class="res-grid">
+      <div class="res-cell food">
+        <div class="rname">FOOD</div>
+        <div class="rrole">/ GROWTH</div>
+        <div class="rdesc">Villagers, basic infantry, farms. Your <b>growth</b> resource. Constantly draining.</div>
+      </div>
+      <div class="res-cell wood">
+        <div class="rname">WOOD</div>
+        <div class="rrole">/ INFRASTRUCTURE</div>
+        <div class="rdesc">Buildings, ranged units, ships, outposts. Your <b>infrastructure</b> resource.</div>
+      </div>
+      <div class="res-cell stone">
+        <div class="rname">STONE</div>
+        <div class="rrole">/ DEFENSE</div>
+        <div class="rdesc">Walls, towers, mining camps. Your <b>defense</b> resource. Underused by beginners.</div>
+      </div>
+      <div class="res-cell metal">
+        <div class="rname">METAL</div>
+        <div class="rrole">/ TECH + ELITE</div>
+        <div class="rdesc">Champions, upgrades, advanced units, siege. Your <b>tech</b> resource. Phase III drinks this.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PHASE CURVES -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">CURVES</span>
+    <span class="title">The Resource Curves</span>
+    <span class="tag">GENERIC + PTOLEMIES</span>
+  </div>
+  <div class="block-body">
+
+    <h3 class="sub">// Generic Distribution</h3>
+    <div class="curve-wrap">
+      <div class="curve-row">
+        <div class="clbl">PHASE I (0-6 MIN)</div>
+        <div class="curve-bar">
+          <div class="curve-seg seg-food" style="width:50%">FOOD 50%</div>
+          <div class="curve-seg seg-wood" style="width:40%">WOOD 40%</div>
+          <div class="curve-seg seg-stone" style="width:10%">STONE 10%</div>
+        </div>
+      </div>
+      <div class="curve-row">
+        <div class="clbl">PHASE II (6-12 MIN)</div>
+        <div class="curve-bar">
+          <div class="curve-seg seg-food" style="width:35%">FOOD 35%</div>
+          <div class="curve-seg seg-wood" style="width:30%">WOOD 30%</div>
+          <div class="curve-seg seg-stone" style="width:15%">STONE 15%</div>
+          <div class="curve-seg seg-metal" style="width:20%">METAL 20%</div>
+        </div>
+      </div>
+      <div class="curve-row">
+        <div class="clbl">PHASE III (12+ MIN)</div>
+        <div class="curve-bar">
+          <div class="curve-seg seg-food" style="width:30%">FOOD 30%</div>
+          <div class="curve-seg seg-wood" style="width:25%">WOOD 25%</div>
+          <div class="curve-seg seg-stone" style="width:10%">STONE 10%</div>
+          <div class="curve-seg seg-metal" style="width:35%">METAL 35%</div>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="sub">// Ptolemies-Specific (your civ)</h3>
+    <p style="margin-bottom:10px"><b>Why different:</b> Ptolemies have cheaper farms, cheaper pikes, mercenary camps (less wood needed for forward production), and metal-hungry champions + elephants in Phase III.</p>
+    <div class="curve-wrap">
+      <div class="curve-row">
+        <div class="clbl">PHASE I — PTOLEMIES</div>
+        <div class="curve-bar">
+          <div class="curve-seg seg-food" style="width:55%">FOOD 55%</div>
+          <div class="curve-seg seg-wood" style="width:35%">WOOD 35%</div>
+          <div class="curve-seg seg-stone" style="width:10%">STONE 10%</div>
+        </div>
+      </div>
+      <div class="curve-row">
+        <div class="clbl">PHASE II — PTOLEMIES</div>
+        <div class="curve-bar">
+          <div class="curve-seg seg-food" style="width:40%">FOOD 40%</div>
+          <div class="curve-seg seg-wood" style="width:25%">WOOD 25%</div>
+          <div class="curve-seg seg-stone" style="width:10%">STONE 10%</div>
+          <div class="curve-seg seg-metal" style="width:25%">METAL 25%</div>
+        </div>
+      </div>
+      <div class="curve-row">
+        <div class="clbl">PHASE III — PTOLEMIES</div>
+        <div class="curve-bar">
+          <div class="curve-seg seg-food" style="width:30%">FOOD 30%</div>
+          <div class="curve-seg seg-wood" style="width:20%">WOOD 20%</div>
+          <div class="curve-seg seg-stone" style="width:5%">5%</div>
+          <div class="curve-seg seg-metal" style="width:45%">METAL 45%</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rule-line"><b>Ptolemies key insight:</b> you can run lower wood than most civs because mercenary camps replace the need for multiple forward barracks. That wood becomes food and metal.</div>
+  </div>
+</section>
+
+<!-- HOARDING TRIPWIRES -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">TRIPWIRES</span>
+    <span class="title">Your Hoarding Cure</span>
+    <span class="tag">SPEND THE MOMENT YOU CROSS</span>
+  </div>
+  <div class="block-body">
+    <p>Set these as mental tripwires. The instant any number crosses, do the listed action. Repeat forever. <b>Resources don't earn interest. Move them.</b></p>
+
+    <div class="tripwires">
+      <div>
+        <div class="trip-res">FOOD</div>
+        <div class="trip-val">&gt; 500</div>
+        <div class="trip-do">→ queue more villagers in CC + train units</div>
+      </div>
+      <div>
+        <div class="trip-res">WOOD</div>
+        <div class="trip-val">&gt; 400</div>
+        <div class="trip-do">→ farm, barracks, tower, outpost</div>
+      </div>
+      <div>
+        <div class="trip-res">STONE</div>
+        <div class="trip-val">&gt; 200</div>
+        <div class="trip-do">→ drop a tower or wall section</div>
+      </div>
+      <div>
+        <div class="trip-res">METAL</div>
+        <div class="trip-val">&gt; 200</div>
+        <div class="trip-do">→ research an upgrade or champion</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TIER UNLOCKS -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">UNLOCKS</span>
+    <span class="title">When to Unlock Bigger Troops</span>
+    <span class="tag">PHASE TIMINGS</span>
+  </div>
+  <div class="block-body">
+
+    <div class="tier-stack">
+      <div class="tier-row">
+        <div class="tier-num">
+          <div class="pnum">I</div>
+          <div class="plbl">VILLAGE</div>
+        </div>
+        <div class="tier-body">
+          <div class="tlbl">// Eco-only phase</div>
+          <p>Citizen soldiers only. Basic spearmen, archers, slingers, scout cav. <b>Don't try to fight wars here.</b> Build economy.</p>
+        </div>
+        <div class="tier-time">0 → 6 MIN</div>
+      </div>
+      <div class="tier-row">
+        <div class="tier-num">
+          <div class="pnum">II</div>
+          <div class="plbl">TOWN</div>
+        </div>
+        <div class="tier-body">
+          <div class="tlbl">// Real military</div>
+          <p>Unlocks pikemen, swordsmen, basic cav variants, towers, second CC, blacksmith (start upgrading!), <b>mercenary camp</b> (Ptolemies bonus).</p>
+        </div>
+        <div class="tier-time">6 → 12 MIN<br><span style="font-size:10px; font-weight: normal;">at 25 villagers</span></div>
+      </div>
+      <div class="tier-row">
+        <div class="tier-num">
+          <div class="pnum">III</div>
+          <div class="plbl">CITY</div>
+        </div>
+        <div class="tier-body">
+          <div class="tlbl">// The elite phase</div>
+          <p>Unlocks <b>champions, war elephants, siege, Wonders</b>, advanced upgrades, embassy mercenaries. First champion ≈ min 16-18, first elephant ≈ min 18-20.</p>
+        </div>
+        <div class="tier-time">12 → 18 MIN<br><span style="font-size:10px; font-weight: normal;">at 50-60 vil</span></div>
+      </div>
+    </div>
+
+    <div class="rule-line"><b>The trap:</b> Don't rush Phase III. Phase III at minute 12 with 30 villagers = you can BUILD elephants but can't AFFORD them. Phase III at minute 18 with 60 villagers = you actually USE it.</div>
+
+    <h3 class="sub">// Champions are not bulk units</h3>
+    <p>Build 5-10 champions, never 40. They're <b>force multipliers</b> — your hammer. Citizens are your anvil.</p>
+  </div>
+</section>
+
+<!-- UPGRADE ROI -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">ROI</span>
+    <span class="title">The Upgrade Priority Ladder</span>
+    <span class="tag">RESEARCH IN ORDER</span>
+  </div>
+  <div class="block-body">
+    <p>Most upgrades pay themselves back in 60-90 seconds. After that = pure profit. Skipping them is leaving free resources on the table.</p>
+    <p>This is the order to research. Top = highest ROI.</p>
+
+    <ul class="roi-list">
+      <li>
+        <div class="rnum">01</div>
+        <div class="rtxt"><b>Phase-ups</b> — Phase II at ~min 6, Phase III at ~min 15. Unlocks everything.</div>
+        <div class="rtag always">ALWAYS</div>
+      </li>
+      <li>
+        <div class="rnum">02</div>
+        <div class="rtxt"><b>Resource gathering rate</b> — wood/stone/metal +X% from storage/farmstead. ROI in &lt;90s.</div>
+        <div class="rtag always">ALWAYS</div>
+      </li>
+      <li>
+        <div class="rnum">03</div>
+        <div class="rtxt"><b>Blacksmith Weapon +1/+2/+3</b> — affects EVERY combat unit. Every game, every tier.</div>
+        <div class="rtag always">ALWAYS</div>
+      </li>
+      <li>
+        <div class="rnum">04</div>
+        <div class="rtxt"><b>Blacksmith Armor +1/+2/+3</b> — same as weapon. Stacks with everything.</div>
+        <div class="rtag always">ALWAYS</div>
+      </li>
+      <li>
+        <div class="rnum">05</div>
+        <div class="rtxt"><b>Barracks pike upgrades</b> — if you have 15+ pikes (you do).</div>
+        <div class="rtag usually">USUALLY</div>
+      </li>
+      <li>
+        <div class="rnum">06</div>
+        <div class="rtxt"><b>Civ-unique bonus techs</b> — Ptolemies has good ones (farming, mercenaries). Look at your bonus tree.</div>
+        <div class="rtag usually">USUALLY</div>
+      </li>
+      <li>
+        <div class="rnum">07</div>
+        <div class="rtxt"><b>Stable-specific cav upgrades</b> — only if you have 8+ of that cav type. Below that, buy bodies instead.</div>
+        <div class="rtag conditional">CONDITIONAL</div>
+      </li>
+      <li>
+        <div class="rnum">08</div>
+        <div class="rtxt"><b>Champion-specific upgrades</b> — only after you've actually built champions in numbers.</div>
+        <div class="rtag conditional">CONDITIONAL</div>
+      </li>
+      <li>
+        <div class="rnum">09</div>
+        <div class="rtxt"><b>Naval upgrades</b> — only on water maps.</div>
+        <div class="rtag skip">SKIP</div>
+      </li>
+    </ul>
+
+    <div class="rule-line"><b>The math:</b> Blacksmith +1 weapon on a 40-unit army &gt; stable spear-cav upgrade on 3 cav. The wider your upgrade reaches, the higher the ROI.</div>
+  </div>
+</section>
+
+<!-- MERCENARIES -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">MERCS</span>
+    <span class="title">Mercenaries // Pizza Delivery</span>
+    <span class="tag">NOT KNIGHTS</span>
+  </div>
+  <div class="block-body">
+
+    <h3 class="sub">// The Reframe</h3>
+    <p>Mercenaries are NOT elite veterans you must protect. <b>They are military teleportation, paid for in metal.</b> They trade food/wood cost → metal cost, and in return give you fast spawning and forward placement.</p>
+
+    <div class="rule-line"><b>Mantra:</b> Mercenaries are pizza delivery, not knights. Use them. Lose them. Reorder them.</div>
+
+    <h3 class="sub">// Five times to use them</h3>
+    <ol>
+      <li><b>Forward Reinforcements</b> — build a Merc Camp near the fight. Units spawn 10s from the front instead of 60s.</li>
+      <li><b>Emergency Defense</b> — attack incoming, drop a camp at the choke, pump units instantly.</li>
+      <li><b>Metal-Rich Eco</b> — late game, you have 600 metal and food can't keep up. Mercs spend metal instead.</li>
+      <li><b>Filling Composition Gaps</b> — need slingers fast, home barracks full? Merc camp handles it.</li>
+      <li><b>Out-of-Position Reinforcement</b> — army fighting far from home, drop a camp halfway across the map.</li>
+    </ol>
+
+    <h3 class="sub">// When NOT to use</h3>
+    <ul>
+      <li>Phase I (no metal yet)</li>
+      <li>Food overflowing, metal tight</li>
+      <li>As your <b>main bulk</b> army — citizens are cheaper</li>
+    </ul>
+
+    <h3 class="sub">// The Ptolemies signature: Forward Merc Camp</h3>
+    <p>Around minute 10-12:</p>
+    <ol>
+      <li>Send 1 villager to a spot halfway to the enemy</li>
+      <li>Build a Mercenary Camp under cover of your standing army</li>
+      <li>Now your forward outpost is also a unit factory</li>
+      <li>Reinforcements for any attack spawn in 10 seconds</li>
+    </ol>
+    <p>This is the Ptolemies signature move. Devastating on Medium AI — the AI doesn't handle forward production well.</p>
+  </div>
+</section>
+
+<!-- EXPANSION -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">EXPAND</span>
+    <span class="title">Second CC // When + Where</span>
+    <span class="tag">DOUBLE THE ECO</span>
+  </div>
+  <div class="block-body">
+    <p>A second Civic Centre gives you: a second source of villager production, a second food-gathering hub, vision &amp; map control.</p>
+
+    <h3 class="sub">// The rule</h3>
+    <p>Drop your second CC <b>when Phase II completes</b>, on the closest unclaimed resource cluster — usually stone or metal.</p>
+
+    <h3 class="sub">// One CC is fine for Easy. You NEED two for Medium and up.</h3>
+    <p>Reason: a single CC can only produce villagers at one queue. Medium AI runs two queues. You need to match production or fall behind on workers.</p>
+
+    <h3 class="sub">// Don't drop a CC if</h3>
+    <ul>
+      <li>You can't defend it (no walls/towers within 30s walk)</li>
+      <li>It's in the open with no natural choke</li>
+      <li>You're under attack right now (build a fort first, expand later)</li>
+    </ul>
+  </div>
+</section>
+
+<!-- WORKER DISTRIBUTION REMINDER -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">WORKERS</span>
+    <span class="title">Worker Distribution by Phase</span>
+    <span class="tag">WHO DOES WHAT</span>
+  </div>
+  <div class="block-body">
+    <p>Rule: <b>women → food only.</b> Citizen-soldiers → wood, stone, metal (faster than women at those).</p>
+    <table>
+      <thead>
+        <tr><th>Phase</th><th>Total Workers</th><th>Food</th><th>Wood</th><th>Stone</th><th>Metal</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><b>PHASE I</b></td><td>~25</td><td>10 (women)</td><td>10 (men)</td><td>3 (men)</td><td>2 (men)</td></tr>
+        <tr><td><b>PHASE II</b></td><td>~40 + 15 army</td><td>15 (women)</td><td>12 (men)</td><td>5 (men)</td><td>5 (men)</td></tr>
+        <tr><td><b>PHASE III</b></td><td>~65 + 40 army</td><td>25 (women)</td><td>15 (men)</td><td>5 (men)</td><td>15 (men)</td></tr>
+        <tr><td><b>PUSH</b></td><td>~70 + 50 army</td><td>25</td><td>15</td><td>5</td><td>20</td></tr>
+      </tbody>
+    </table>
+    <div class="rule-line"><b>Standing army NEVER gathers.</b> Working soldiers are reserves. Pull them only in emergency or for the final push.</div>
+  </div>
+</section>
+
+<!-- ENDPLATE -->
+<section class="block" style="border-color:var(--accent); border-width:6px">
+  <div class="block-header" style="background:var(--accent)">
+    <span class="num">ENDPLATE</span>
+    <span class="title">Economy Habits</span>
+    <span class="tag">MEMORIZE</span>
+  </div>
+  <div class="block-body">
+    <ol>
+      <li><b>Economy is flow.</b> Spend the moment you cross a tripwire.</li>
+      <li><b>Women on food. Men on wood/stone/metal.</b> Never mix.</li>
+      <li><b>Standing army never gathers.</b> Working soldiers are reserves.</li>
+      <li><b>Always queue villagers in the CC.</b> Always. Until you have 70.</li>
+      <li><b>Two CCs by minute 12.</b> One queue is not enough.</li>
+      <li><b>Phase II at 25 vil. Phase III at 50-60.</b> Not earlier, not later.</li>
+      <li><b>Always research Phase-ups, gather techs, blacksmith.</b> Free profit.</li>
+      <li><b>Mercenaries are pizza delivery.</b> Use the forward camp.</li>
+    </ol>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div>END OF DOCUMENT</div>
+  <div style="margin-top: 8px;">FIELD MANUAL // ECONOMY + UPGRADES // PRINTED FOR INTERNAL USE</div>
+</footer>
+
+</body>
+</html>

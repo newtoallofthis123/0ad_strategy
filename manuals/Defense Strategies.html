@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>DEFENSE STRATEGIES // 0 A.D.</title>
+<style>
+  :root {
+    --bg: #e8e6df;
+    --ink: #0a0a0a;
+    --paper: #f5f3eb;
+    --accent: #d83a1e;
+    --blue: #2050a0;
+    --green: #2a7040;
+    --mute: #5a5a5a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--ink); }
+  body {
+    font-family: "JetBrains Mono", "SF Mono", "Menlo", "Consolas", monospace;
+    line-height: 1.5;
+  }
+
+  /* MASTHEAD */
+  .masthead {
+    border-bottom: 6px solid var(--ink);
+    padding: 24px 40px 16px;
+    background: var(--paper);
+  }
+  .nameplate {
+    font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
+    display: flex; justify-content: space-between;
+    border-bottom: 1px solid var(--ink); padding-bottom: 8px; margin-bottom: 16px;
+  }
+  .masthead h1 {
+    font-size: 64px; font-weight: 900; letter-spacing: -2px; line-height: 0.9;
+    text-transform: uppercase;
+  }
+  .masthead h1 .slash { color: var(--accent); }
+  .masthead .tagline {
+    margin-top: 12px;
+    font-size: 14px; text-transform: uppercase; letter-spacing: 1px;
+    border-top: 1px solid var(--ink); padding-top: 12px;
+    display: grid; grid-template-columns: repeat(4, 1fr);
+  }
+  .masthead .tagline span { border-right: 1px solid var(--ink); padding-right: 12px; }
+  .masthead .tagline span:last-child { border-right: 0; }
+
+  main { padding: 0 40px 60px; max-width: 1100px; margin: 0 auto; }
+
+  /* BLOCK */
+  .block {
+    border: 3px solid var(--ink);
+    margin-top: 32px;
+    background: var(--paper);
+  }
+  .block-header {
+    background: var(--ink); color: var(--paper);
+    padding: 16px 24px;
+    display: flex; justify-content: space-between; align-items: baseline;
+    border-bottom: 3px solid var(--ink);
+  }
+  .block-header .num {
+    font-size: 14px; letter-spacing: 3px; opacity: 0.6;
+  }
+  .block-header .title {
+    font-size: 28px; font-weight: 900; letter-spacing: -0.5px;
+    text-transform: uppercase; flex: 1; padding: 0 24px;
+  }
+  .block-header .tag {
+    font-size: 12px; letter-spacing: 2px;
+    border-left: 1px solid var(--paper); padding-left: 16px;
+  }
+
+  .body-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+  .diagram-pane {
+    border-right: 3px solid var(--ink);
+    padding: 24px;
+    background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .diagram-pane svg { width: 100%; max-width: 420px; height: auto; }
+  .text-pane { padding: 24px; }
+
+  .block-body { padding: 24px; }
+
+  h3.sub {
+    font-size: 12px; letter-spacing: 2.5px; text-transform: uppercase;
+    border-bottom: 2px solid var(--ink); padding-bottom: 4px; margin: 16px 0 8px;
+    font-weight: 700;
+  }
+  h3.sub:first-child { margin-top: 0; }
+
+  p { font-size: 13px; margin: 6px 0; }
+  ul, ol { padding-left: 20px; font-size: 13px; }
+  li { margin: 4px 0; }
+  b { font-weight: 700; }
+
+  .rule-line {
+    background: var(--ink); color: var(--paper);
+    padding: 10px 14px; margin: 10px 0;
+    border-left: 6px solid var(--accent);
+    font-size: 13px;
+  }
+  .rule-line b { color: var(--accent); }
+
+  /* LAYER DIAGRAM */
+  .layer-stack {
+    display: grid; grid-template-columns: 1fr; gap: 0;
+    border: 3px solid var(--ink);
+    margin: 16px 0;
+  }
+  .layer-row {
+    display: grid; grid-template-columns: 80px 1fr;
+    border-bottom: 2px solid var(--ink);
+    min-height: 70px;
+  }
+  .layer-row:last-child { border-bottom: 0; }
+  .layer-num {
+    background: var(--ink); color: var(--paper);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    border-right: 2px solid var(--ink);
+    font-size: 11px; letter-spacing: 2px;
+  }
+  .layer-num .lnum { font-size: 32px; font-weight: 900; line-height: 1; color: var(--accent); }
+  .layer-content { padding: 14px 18px; }
+  .layer-content .lname { font-size: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+  .layer-content .ldesc { font-size: 12px; color: var(--mute); margin-top: 4px; }
+
+  /* SACRIFICE GRID */
+  .sac-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 0;
+    border-top: 2px solid var(--ink); border-left: 2px solid var(--ink);
+  }
+  .sac-grid > div {
+    border-right: 2px solid var(--ink);
+    border-bottom: 2px solid var(--ink);
+    padding: 14px;
+  }
+  .sac-grid h4 {
+    font-size: 13px; text-transform: uppercase; letter-spacing: 2px;
+    border-bottom: 1px solid var(--ink); padding-bottom: 4px; margin-bottom: 6px;
+    color: var(--accent);
+  }
+  .sac-grid p { font-size: 12px; }
+  .sac-grid .hist { font-size: 11px; color: var(--mute); font-style: italic; margin-top: 4px; }
+
+  /* DECISION FLOW */
+  .flow {
+    display: grid; grid-template-columns: 1fr; gap: 0;
+    margin: 16px 0;
+  }
+  .flow-step {
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    padding: 14px 18px;
+    margin-bottom: 8px;
+    position: relative;
+  }
+  .flow-step.q { border-left: 8px solid var(--accent); }
+  .flow-step.yes { margin-left: 32px; background: rgba(42,112,64,0.1); border-color: var(--green); }
+  .flow-step.no { margin-left: 32px; background: rgba(216,58,30,0.08); border-color: var(--accent); }
+  .flow-step .lbl {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 2px; font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .flow-step.q .lbl { color: var(--accent); }
+  .flow-step.yes .lbl { color: var(--green); }
+  .flow-step.no .lbl { color: var(--accent); }
+  .flow-step p { font-size: 13px; }
+
+  /* TABLE */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--ink); }
+  th { background: var(--ink); color: var(--paper); text-transform: uppercase; letter-spacing: 1.5px; font-size: 11px; }
+
+  /* FOOTER */
+  .footer {
+    margin-top: 48px;
+    border-top: 6px solid var(--ink);
+    padding: 24px 40px;
+    text-align: center;
+    font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--mute);
+  }
+
+  @media (max-width: 800px) {
+    .body-split { grid-template-columns: 1fr; }
+    .diagram-pane { border-right: 0; border-bottom: 3px solid var(--ink); }
+    .sac-grid { grid-template-columns: 1fr; }
+  }
+
+  /* VOLUME NAV */
+  .volume-nav {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr) 48px;
+    align-items: center;
+    gap: 0;
+    background: var(--ink);
+    color: var(--paper);
+    border-bottom: 3px solid var(--ink);
+  }
+  .volume-nav a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .volume-arrow {
+    display: grid;
+    place-items: center;
+    min-height: 48px;
+    border-right: 1px solid var(--paper);
+    font-size: 24px;
+    font-weight: 900;
+  }
+  .volume-arrow.next {
+    border-right: 0;
+    border-left: 1px solid var(--paper);
+  }
+  .volume-title {
+    min-width: 0;
+    padding: 12px 16px;
+    text-align: center;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .volume-arrow:hover,
+  .volume-arrow:focus-visible {
+    background: var(--accent);
+    outline: 0;
+  }
+
+</style>
+</head>
+<body>
+<nav class="volume-nav" aria-label="Volume navigation">
+  <a class="volume-arrow prev" href="Attack%20Strategies.html" aria-label="Previous volume">&lt;</a>
+  <div class="volume-title">Defense Strategies</div>
+  <a class="volume-arrow next" href="Scouting.html" aria-label="Next volume">&gt;</a>
+</nav>
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <div class="nameplate">
+    <span>VOL.03 — TUE 12.MAY.2026</span>
+    <span>FIELD MANUAL // DEFENSE PATTERNS // 0 A.D.</span>
+    <span>NO.003</span>
+  </div>
+  <h1>DEFENSE<span class="slash">/</span>STRATEGIES</h1>
+  <div class="tagline">
+    <span>WHEN YOU ARE OUTMATCHED</span>
+    <span>TERRAIN FIGHTS FIRST</span>
+    <span>SACRIFICE WITH PURPOSE</span>
+    <span>SURVIVE TO STRIKE</span>
+  </div>
+</header>
+
+<main>
+
+<!-- DOCTRINE -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">DOCTRINE</span>
+    <span class="title">Three Laws of Defense</span>
+    <span class="tag">READ FIRST</span>
+  </div>
+  <div class="block-body">
+
+    <div class="rule-line"><b>LAW 01 —</b> When outmatched, your army is NOT the front line. <b>Terrain + infrastructure fights first.</b> The army is the closer.</div>
+
+    <div class="rule-line"><b>LAW 02 —</b> Buildings can be rebuilt. <b>Armies take three minutes to retrain.</b> Save the army, not the bricks.</div>
+
+    <div class="rule-line"><b>LAW 03 —</b> Every sacrifice must have a purpose. <b>"Did those troops buy me more than they cost?"</b> If yes, it was a good play — regardless of body count.</div>
+
+  </div>
+</section>
+
+<!-- THE DEFENSIVE HIERARCHY -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">HIERARCHY</span>
+    <span class="title">The Four Layers of Defense</span>
+    <span class="tag">WHO FIGHTS WHEN</span>
+  </div>
+  <div class="block-body">
+    <p>When their army comes, things die in this order. You want their army at <b>20% HP</b> by the time it reaches Layer 03.</p>
+
+    <div class="layer-stack">
+      <div class="layer-row">
+        <div class="layer-num">
+          <div class="lnum">01</div>
+          <div>TERRAIN</div>
+        </div>
+        <div class="layer-content">
+          <div class="lname">Walls + Chokepoints</div>
+          <div class="ldesc">The map itself fighting for you. They have to walk through narrow passes, around walls, through gates. Costs them 30+ seconds and takes the first chip damage.</div>
+        </div>
+      </div>
+      <div class="layer-row">
+        <div class="layer-num">
+          <div class="lnum">02</div>
+          <div>BUILDINGS</div>
+        </div>
+        <div class="layer-content">
+          <div class="lname">Towers + Forts (with garrisoned archers)</div>
+          <div class="ldesc">The actual damage dealers. Tower + 5 archers garrisoned = death machine. Upgrades stack. This is where their army should bleed out.</div>
+        </div>
+      </div>
+      <div class="layer-row">
+        <div class="layer-num">
+          <div class="lnum">03</div>
+          <div>ARMY</div>
+        </div>
+        <div class="layer-content">
+          <div class="lname">Your Standing Army (behind the wall)</div>
+          <div class="ldesc">Sortie out to finish off survivors. Kill any siege approaching the wall. Don't engage the full attacking force head-on — let the towers wear them down first.</div>
+        </div>
+      </div>
+      <div class="layer-row">
+        <div class="layer-num">
+          <div class="lnum">04</div>
+          <div>INSURANCE</div>
+        </div>
+        <div class="layer-content">
+          <div class="lname">Villagers garrisoned in CC + houses</div>
+          <div class="ldesc">If everything else falls, the villagers survive. As long as they live, you can rebuild. As long as the CC stands, you can train new units.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rule-line"><b>The mistake you keep making:</b> rushing Layer 03 (your army) out to meet them in the open. Without Layer 01 and 02 doing their job first, your army fights at 1:1. Behind the wall, you fight at 3:1.</div>
+  </div>
+</section>
+
+<!-- THE SACRIFICE PRINCIPLE -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">PRINCIPLE</span>
+    <span class="title">The Sacrifice Doctrine</span>
+    <span class="tag">SOME TROOPS EXIST TO DIE</span>
+  </div>
+  <div class="block-body">
+    <p>Every great defense in history involved <b>deliberate sacrifice</b>. Some units exist to die so the rest can win. Stop trying to save every soldier — start asking <i>which sacrifice buys what you need</i>.</p>
+
+    <div class="sac-grid">
+      <div>
+        <h4>// Screening Force</h4>
+        <p>5-8 cheap spearmen blocking a choke. Their job: slow the enemy 20 seconds. Their death is the budget.</p>
+        <div class="hist">Historical: rearguards at every retreating army from Rome to Napoleon.</div>
+      </div>
+      <div>
+        <h4>// Diversion</h4>
+        <p>Light army hitting a secondary base. They might all die. Their death pulled the enemy's main army out of position.</p>
+        <div class="hist">Historical: countless flanking feints — they exist to draw attention, not to win.</div>
+      </div>
+      <div>
+        <h4>// Rearguard</h4>
+        <p>The last 3-4 units cover your retreat. They body-block pursuit. Without them, your retreating army is chased and killed from behind.</p>
+        <div class="hist">Historical: Thermopylae — 300 stayed so Greece could retreat. Bought 3 days = saved Greece.</div>
+      </div>
+      <div>
+        <h4>// Tower Bait</h4>
+        <p>Let a tower fall on purpose. Their army stops to attack wood. You reposition. Ambush from behind while they're chopping.</p>
+        <div class="hist">Historical: scorched earth tactics — surrender the building, keep the army.</div>
+      </div>
+    </div>
+
+    <div class="rule-line"><b>The mental shift:</b> from <i>"I must save every unit"</i> to <i>"what's the cheapest sacrifice that buys what I need?"</i> Once that clicks, you stop panicking when 5 units die.</div>
+  </div>
+</section>
+
+<!-- =========== 01 KILL BOX =========== -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">PATTERN 01</span>
+    <span class="title">The Kill Box</span>
+    <span class="tag">★ EASY · MOST FUNDAMENTAL</span>
+  </div>
+  <div class="body-split">
+    <div class="diagram-pane">
+      <svg viewBox="0 0 400 280">
+        <!-- Walls on either side of choke -->
+        <rect x="20" y="50" width="160" height="20" fill="#0a0a0a"/>
+        <rect x="20" y="210" width="160" height="20" fill="#0a0a0a"/>
+        <!-- Towers at choke entrance -->
+        <rect x="180" y="30" width="30" height="40" fill="#0a0a0a"/>
+        <polygon points="178,30 212,30 195,16" fill="#d83a1e"/>
+        <rect x="180" y="210" width="30" height="40" fill="#0a0a0a"/>
+        <polygon points="178,250 212,250 195,264" fill="#d83a1e"/>
+        <!-- Fort behind -->
+        <rect x="250" y="100" width="60" height="80" fill="#0a0a0a"/>
+        <rect x="245" y="100" width="70" height="10" fill="#0a0a0a"/>
+        <rect x="245" y="170" width="70" height="10" fill="#0a0a0a"/>
+        <text x="280" y="146" font-family="monospace" font-size="9" fill="#f5f3eb" text-anchor="middle" font-weight="bold">FORT</text>
+        <!-- Pikes blocking choke -->
+        <g fill="#2050a0">
+          <rect x="220" y="100" width="10" height="14"/>
+          <rect x="220" y="120" width="10" height="14"/>
+          <rect x="220" y="140" width="10" height="14"/>
+          <rect x="220" y="160" width="10" height="14"/>
+          <rect x="220" y="180" width="10" height="14"/>
+        </g>
+        <!-- Enemy arrows funneling in -->
+        <g stroke="#d83a1e" stroke-width="3" fill="none">
+          <path d="M380,60 L240,90"/><polygon points="244,85 234,92 245,96" fill="#d83a1e"/>
+          <path d="M380,140 L240,140"/><polygon points="244,134 232,140 244,146" fill="#d83a1e"/>
+          <path d="M380,220 L240,190"/><polygon points="244,186 234,196 240,184" fill="#d83a1e"/>
+        </g>
+        <!-- Arrow shots from towers -->
+        <g stroke="#d83a1e" stroke-width="1.5" stroke-dasharray="3">
+          <line x1="195" y1="70" x2="260" y2="120"/>
+          <line x1="195" y1="210" x2="260" y2="160"/>
+          <line x1="195" y1="70" x2="300" y2="150"/>
+          <line x1="195" y1="210" x2="300" y2="130"/>
+        </g>
+
+        <text x="200" y="20" font-family="monospace" font-size="11" font-weight="bold" text-anchor="middle" fill="#0a0a0a">FUNNEL → CROSSFIRE → PIKE WALL</text>
+      </svg>
+    </div>
+    <div class="text-pane">
+      <h3 class="sub">// The Setup</h3>
+      <ul>
+        <li>ONE choke (Alpine valley = perfect)</li>
+        <li>Walls left and right, forcing single-file entry</li>
+        <li>2 towers at the entrance — garrisoned with archers</li>
+        <li>A Fort 30s behind, also garrisoned</li>
+        <li>Pikes hold the gap. Archers shoot from inside buildings.</li>
+      </ul>
+
+      <h3 class="sub">// Why it works</h3>
+      <p>Their army can only attack 4-5 wide. Everyone behind is twiddling thumbs. Meanwhile your archers shoot from <b>3 buildings</b> at once. Crossfire kills 2:1 even when their army is bigger.</p>
+
+      <div class="rule-line"><b>You already invented this</b> with the house-maze + tower combo. This is just the formalized version.</div>
+    </div>
+  </div>
+</section>
+
+<!-- =========== 02 LAYERED WALLS =========== -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">PATTERN 02</span>
+    <span class="title">Layered Walls</span>
+    <span class="tag">★★ MEDIUM · STALL MASTER</span>
+  </div>
+  <div class="body-split">
+    <div class="diagram-pane">
+      <svg viewBox="0 0 400 280">
+        <!-- Outer wall (sacrificial) -->
+        <rect x="100" y="40" width="20" height="200" fill="#5a5a5a"/>
+        <text x="110" y="32" font-family="monospace" font-size="9" text-anchor="middle" fill="#5a5a5a">WALL 01</text>
+        <text x="110" y="252" font-family="monospace" font-size="8" text-anchor="middle" fill="#5a5a5a">SACRIFICIAL</text>
+        <!-- Tower behind W1 -->
+        <rect x="140" y="120" width="22" height="32" fill="#0a0a0a"/>
+        <polygon points="138,120 164,120 151,108" fill="#d83a1e"/>
+        <!-- Kill zone -->
+        <rect x="125" y="60" width="100" height="160" fill="#d83a1e" opacity="0.15"/>
+        <text x="175" y="160" font-family="monospace" font-size="10" font-weight="bold" text-anchor="middle" fill="#d83a1e">KILL</text>
+        <text x="175" y="174" font-family="monospace" font-size="10" font-weight="bold" text-anchor="middle" fill="#d83a1e">ZONE</text>
+        <!-- Inner wall -->
+        <rect x="230" y="40" width="20" height="200" fill="#0a0a0a"/>
+        <text x="240" y="32" font-family="monospace" font-size="9" text-anchor="middle" fill="#0a0a0a">WALL 02</text>
+        <!-- Tower behind W2 -->
+        <rect x="270" y="120" width="22" height="32" fill="#0a0a0a"/>
+        <polygon points="268,120 294,120 281,108" fill="#d83a1e"/>
+        <!-- Base -->
+        <rect x="320" y="100" width="60" height="80" fill="#2050a0"/>
+        <text x="350" y="146" font-family="monospace" font-size="9" fill="#f5f3eb" text-anchor="middle" font-weight="bold">BASE</text>
+        <!-- Enemy approach -->
+        <g stroke="#0a0a0a" stroke-width="3" fill="none">
+          <path d="M30,140 L95,140"/><polygon points="92,135 100,140 92,145" fill="#0a0a0a"/>
+        </g>
+        <!-- Arrows shooting at enemy from towers -->
+        <g stroke="#d83a1e" stroke-width="1.5" stroke-dasharray="3">
+          <line x1="150" y1="135" x2="100" y2="140"/>
+          <line x1="280" y1="135" x2="225" y2="140"/>
+        </g>
+      </svg>
+    </div>
+    <div class="text-pane">
+      <h3 class="sub">// The Setup</h3>
+      <ol>
+        <li><b>Wall 01</b> — forward wall, expected to fall</li>
+        <li>Towers behind Wall 01 shoot at them while they break it</li>
+        <li>They breach → enter the <b>kill zone</b> between walls</li>
+        <li>Towers from both sides shred them</li>
+        <li><b>Wall 02</b> still standing. They face it exhausted.</li>
+      </ol>
+
+      <h3 class="sub">// Why it works</h3>
+      <p>Their army loses 30-40% HP just getting to your real defense. The first wall is <b>scheduled to die</b> — that's its purpose.</p>
+
+      <div class="rule-line"><b>Cheapest insurance in the game.</b> 200 stone for Wall 01 saves you 800+ resources of dead units.</div>
+    </div>
+  </div>
+</section>
+
+<!-- =========== 03 CONTROLLED RETREAT =========== -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">PATTERN 03</span>
+    <span class="title">Controlled Retreat</span>
+    <span class="tag">★★ MEDIUM · HARDEST TO ACCEPT</span>
+  </div>
+  <div class="body-split">
+    <div class="diagram-pane">
+      <svg viewBox="0 0 400 280">
+        <!-- Main base -->
+        <rect x="250" y="90" width="80" height="100" fill="#2050a0"/>
+        <text x="290" y="140" font-family="monospace" font-size="11" fill="#f5f3eb" text-anchor="middle" font-weight="bold">MAIN</text>
+        <text x="290" y="158" font-family="monospace" font-size="9" fill="#f5f3eb" text-anchor="middle">(SAFE)</text>
+        <!-- Falling base -->
+        <g opacity="0.5">
+          <rect x="40" y="100" width="60" height="60" fill="#2050a0"/>
+          <line x1="40" y1="100" x2="100" y2="160" stroke="#d83a1e" stroke-width="3"/>
+          <line x1="100" y1="100" x2="40" y2="160" stroke="#d83a1e" stroke-width="3"/>
+        </g>
+        <text x="70" y="180" font-family="monospace" font-size="9" fill="#d83a1e" font-weight="bold" text-anchor="middle">LET IT FALL</text>
+        <!-- Enemy army at falling base -->
+        <g fill="#0a0a0a">
+          <rect x="20" y="60" width="14" height="14"/><rect x="40" y="60" width="14" height="14"/>
+          <rect x="60" y="60" width="14" height="14"/><rect x="80" y="60" width="14" height="14"/>
+          <rect x="100" y="60" width="14" height="14"/>
+          <rect x="20" y="180" width="14" height="14"/><rect x="40" y="180" width="14" height="14"/>
+          <rect x="60" y="180" width="14" height="14"/><rect x="80" y="180" width="14" height="14"/>
+          <rect x="100" y="180" width="14" height="14"/>
+        </g>
+        <text x="60" y="220" font-family="monospace" font-size="9" fill="#0a0a0a" font-weight="bold" text-anchor="middle">ENEMY COMMITTED</text>
+        <!-- Villagers escaping -->
+        <g fill="#d4a850">
+          <circle cx="130" cy="120" r="6"/><circle cx="150" cy="125" r="6"/>
+          <circle cx="170" cy="130" r="6"/><circle cx="190" cy="125" r="6"/>
+          <circle cx="210" cy="120" r="6"/>
+        </g>
+        <g stroke="#d4a850" stroke-width="2" fill="none">
+          <path d="M120,120 L240,125"/>
+          <polygon points="238,120 250,125 238,130" fill="#d4a850"/>
+        </g>
+        <text x="180" y="105" font-family="monospace" font-size="9" font-weight="bold" fill="#d4a850" text-anchor="middle">VILLAGERS EVACUATE</text>
+        <text x="200" y="20" font-family="monospace" font-size="11" font-weight="bold" text-anchor="middle" fill="#0a0a0a">TRADE A BASE → SAVE THE ARMY + ECO</text>
+      </svg>
+    </div>
+    <div class="text-pane">
+      <h3 class="sub">// The Move</h3>
+      <p>The enemy has committed to attacking your far base. Don't reinforce.</p>
+      <ol>
+        <li><b>Evacuate the villagers</b> back to main</li>
+        <li>Let the base fall</li>
+        <li>Save the army</li>
+        <li>Buildings rebuild. Armies take 3 minutes.</li>
+      </ol>
+
+      <h3 class="sub">// The math</h3>
+      <p>Base value: ~600 wood + ~400 stone = rebuildable.<br>
+      Army value: ~3000+ resources, 3 minutes of production time. <b>Not rebuildable in time.</b></p>
+
+      <div class="rule-line"><b>Hardest part:</b> watching the base die. Do it anyway. It's the same calculus as the chess sacrifice.</div>
+    </div>
+  </div>
+</section>
+
+<!-- =========== 04 THE STALL =========== -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">PATTERN 04</span>
+    <span class="title">The Stall</span>
+    <span class="tag">★★ MEDIUM · CLOCK GAME</span>
+  </div>
+  <div class="body-split">
+    <div class="diagram-pane">
+      <svg viewBox="0 0 400 280">
+        <!-- Timeline -->
+        <line x1="30" y1="200" x2="370" y2="200" stroke="#0a0a0a" stroke-width="3"/>
+        <!-- Their army line (decreasing) -->
+        <polyline points="30,80 370,150" fill="none" stroke="#0a0a0a" stroke-width="3"/>
+        <text x="30" y="70" font-family="monospace" font-size="9" fill="#0a0a0a" font-weight="bold">THEIR ARMY</text>
+
+        <!-- Your eco line (increasing) -->
+        <polyline points="30,180 370,90" fill="none" stroke="#2050a0" stroke-width="3"/>
+        <text x="350" y="80" font-family="monospace" font-size="9" fill="#2050a0" font-weight="bold" text-anchor="end">YOUR ECO</text>
+
+        <!-- Crossover -->
+        <circle cx="195" cy="121" r="6" fill="#d83a1e"/>
+        <text x="195" y="110" font-family="monospace" font-size="10" fill="#d83a1e" font-weight="bold" text-anchor="middle">CROSSOVER</text>
+        <line x1="195" y1="125" x2="195" y2="205" stroke="#d83a1e" stroke-dasharray="3"/>
+        <text x="195" y="220" font-family="monospace" font-size="9" fill="#d83a1e" text-anchor="middle" font-weight="bold">PUSH NOW</text>
+
+        <!-- Walls behind you -->
+        <g fill="#0a0a0a">
+          <rect x="20" y="230" width="60" height="14"/>
+          <rect x="20" y="250" width="60" height="14"/>
+        </g>
+        <text x="50" y="270" font-family="monospace" font-size="9" text-anchor="middle">YOU: WALLED</text>
+
+        <text x="200" y="30" font-family="monospace" font-size="11" font-weight="bold" text-anchor="middle" fill="#0a0a0a">EVERY MINUTE STALLED = GAP CLOSES</text>
+      </svg>
+    </div>
+    <div class="text-pane">
+      <h3 class="sub">// The Move</h3>
+      <p>They have a bigger army but a smaller eco. <b>Don't fight.</b> Wall up, tower up, sit in your kill box.</p>
+
+      <h3 class="sub">// What's happening</h3>
+      <ul>
+        <li>Every minute: you tech up, train villagers, build infrastructure</li>
+        <li>Every minute: they spend resources on attacks that bounce off walls</li>
+        <li>They can't afford to keep attacking forever</li>
+        <li>The army gap closes. Then crosses.</li>
+      </ul>
+
+      <div class="rule-line"><b>The clock is your ally.</b> Stay alive 5 more minutes and the math flips.</div>
+
+      <h3 class="sub">// Don't</h3>
+      <p>Don't sortie out to "test" them. Stay behind the wall until you have decisive force.</p>
+    </div>
+  </div>
+</section>
+
+<!-- =========== 05 RAID-WHILE-DEFENDING =========== -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">PATTERN 05</span>
+    <span class="title">Raid While Defending</span>
+    <span class="tag">★★★ HIGH · PSYCH WARFARE</span>
+  </div>
+  <div class="body-split">
+    <div class="diagram-pane">
+      <svg viewBox="0 0 400 280">
+        <!-- Your base -->
+        <rect x="20" y="100" width="60" height="80" fill="#2050a0"/>
+        <text x="50" y="146" font-family="monospace" font-size="9" fill="#f5f3eb" text-anchor="middle" font-weight="bold">YOU</text>
+        <!-- Wall -->
+        <rect x="90" y="100" width="10" height="80" fill="#0a0a0a"/>
+        <!-- Enemy attacking your wall -->
+        <g fill="#0a0a0a">
+          <rect x="115" y="110" width="14" height="14"/><rect x="135" y="110" width="14" height="14"/>
+          <rect x="115" y="130" width="14" height="14"/><rect x="135" y="130" width="14" height="14"/>
+          <rect x="115" y="150" width="14" height="14"/><rect x="135" y="150" width="14" height="14"/>
+          <rect x="115" y="170" width="14" height="14"/><rect x="135" y="170" width="14" height="14"/>
+        </g>
+        <text x="125" y="200" font-family="monospace" font-size="9" fill="#0a0a0a" text-anchor="middle" font-weight="bold">ENEMY ARMY</text>
+
+        <!-- Enemy base (with workers, exposed) -->
+        <rect x="320" y="100" width="60" height="80" fill="#0a0a0a"/>
+        <text x="350" y="146" font-family="monospace" font-size="9" fill="#f5f3eb" text-anchor="middle" font-weight="bold">THEIR BASE</text>
+        <text x="350" y="200" font-family="monospace" font-size="9" fill="#d4a850" text-anchor="middle">WORKERS ONLY</text>
+
+        <!-- Your raid cav going around -->
+        <g stroke="#d83a1e" stroke-width="3" fill="none">
+          <path d="M80,90 Q160,30 260,40 Q320,60 320,100"/>
+          <polygon points="315,95 325,103 320,108" fill="#d83a1e"/>
+        </g>
+        <g fill="#d83a1e">
+          <rect x="180" y="32" width="12" height="8"/><rect x="195" y="32" width="12" height="8"/>
+          <rect x="210" y="32" width="12" height="8"/>
+        </g>
+        <text x="200" y="22" font-family="monospace" font-size="9" fill="#d83a1e" font-weight="bold" text-anchor="middle">YOUR 3 CAV → THEIR ECO</text>
+
+        <!-- Status -->
+        <text x="200" y="260" font-family="monospace" font-size="10" font-weight="bold" text-anchor="middle" fill="#0a0a0a">EITHER: THEY RETREAT (YOU SAFE)</text>
+        <text x="200" y="273" font-family="monospace" font-size="10" font-weight="bold" text-anchor="middle" fill="#0a0a0a">OR: THEY KEEP ATTACKING (YOU TAX THEIR ECO)</text>
+      </svg>
+    </div>
+    <div class="text-pane">
+      <h3 class="sub">// The Move</h3>
+      <p>Even while being attacked, send your 3-cav raid squad to <b>THEIR</b> woodline. Yes, really.</p>
+
+      <h3 class="sub">// Why it's brilliant</h3>
+      <p>Their army is committed to attacking you. To save their workers, they'd have to <b>break off the attack</b>. They have two choices:</p>
+      <ul>
+        <li><b>Retreat</b> → your base is saved, you didn't even fight</li>
+        <li><b>Keep attacking</b> → they lose workers at home AND your towers still bleed them</li>
+      </ul>
+      <p>Both outcomes are wins for you.</p>
+
+      <div class="rule-line"><b>The principle:</b> when defending, never just defend. Make them pay attention to two things at once.</div>
+    </div>
+  </div>
+</section>
+
+<!-- =========== 06 COUNTER-COMMIT =========== -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">PATTERN 06</span>
+    <span class="title">The Counter-Commit</span>
+    <span class="tag">★★★★ HARD · WHO BLINKS FIRST</span>
+  </div>
+  <div class="body-split">
+    <div class="diagram-pane">
+      <svg viewBox="0 0 400 280">
+        <!-- Your base under attack -->
+        <rect x="20" y="100" width="60" height="80" fill="#2050a0"/>
+        <text x="50" y="146" font-family="monospace" font-size="9" fill="#f5f3eb" text-anchor="middle" font-weight="bold">YOU</text>
+        <text x="50" y="195" font-family="monospace" font-size="8" fill="#d83a1e" text-anchor="middle" font-weight="bold">UNDER ATTACK</text>
+
+        <!-- Enemy army at your base -->
+        <g fill="#0a0a0a">
+          <rect x="100" y="110" width="14" height="14"/><rect x="120" y="110" width="14" height="14"/>
+          <rect x="140" y="110" width="14" height="14"/>
+          <rect x="100" y="130" width="14" height="14"/><rect x="120" y="130" width="14" height="14"/>
+          <rect x="140" y="130" width="14" height="14"/>
+          <rect x="100" y="150" width="14" height="14"/><rect x="120" y="150" width="14" height="14"/>
+          <rect x="140" y="150" width="14" height="14"/>
+        </g>
+
+        <!-- Their base empty -->
+        <rect x="320" y="100" width="60" height="80" fill="#0a0a0a"/>
+        <text x="350" y="146" font-family="monospace" font-size="9" fill="#f5f3eb" text-anchor="middle" font-weight="bold">THEM</text>
+        <text x="350" y="195" font-family="monospace" font-size="8" fill="#d4a850" text-anchor="middle" font-weight="bold">EMPTY</text>
+
+        <!-- Your army going to their base -->
+        <g stroke="#d83a1e" stroke-width="4" fill="none">
+          <path d="M75,250 L325,250"/>
+          <polygon points="320,242 332,250 320,258" fill="#d83a1e"/>
+        </g>
+        <g fill="#d83a1e">
+          <rect x="100" y="240" width="14" height="14"/><rect x="120" y="240" width="14" height="14"/>
+          <rect x="140" y="240" width="14" height="14"/>
+          <rect x="160" y="240" width="14" height="14"/><rect x="180" y="240" width="14" height="14"/>
+        </g>
+        <text x="180" y="230" font-family="monospace" font-size="9" fill="#d83a1e" font-weight="bold">YOUR ENTIRE ARMY</text>
+
+        <!-- VS arrows -->
+        <text x="200" y="30" font-family="monospace" font-size="11" font-weight="bold" text-anchor="middle" fill="#0a0a0a">THEIR ARMY HITS YOUR BASE</text>
+        <text x="200" y="48" font-family="monospace" font-size="11" font-weight="bold" text-anchor="middle" fill="#d83a1e">YOUR ARMY HITS THEIR BASE</text>
+        <text x="200" y="68" font-family="monospace" font-size="10" text-anchor="middle" fill="#5a5a5a">FIRST TO RETREAT LOSES</text>
+      </svg>
+    </div>
+    <div class="text-pane">
+      <h3 class="sub">// The Move</h3>
+      <p>Their entire army is at your wall. <b>Their base is empty.</b> Send YOUR full army the other way — to THEIR base.</p>
+
+      <h3 class="sub">// The trade</h3>
+      <p>They take a base. You take a base. But because their army has to walk all the way back, <b>you usually finish first.</b></p>
+
+      <h3 class="sub">// Pre-requisites</h3>
+      <ul>
+        <li>Your villagers can survive 60-90 seconds without your army (towers + walls)</li>
+        <li>Your army has siege or can break their CC fast</li>
+        <li>You've accepted the trade in advance — no half-measures</li>
+      </ul>
+
+      <div class="rule-line"><b>"Whoever blinks first loses."</b> Make them blink — make them recall.</div>
+    </div>
+  </div>
+</section>
+
+<!-- DECISION FLOW -->
+<section class="block">
+  <div class="block-header">
+    <span class="num">DECISION</span>
+    <span class="title">Am I About To Throw My Army Away?</span>
+    <span class="tag">ASK BEFORE ENGAGING</span>
+  </div>
+  <div class="block-body">
+
+    <div class="flow">
+      <div class="flow-step q">
+        <div class="lbl">QUESTION 01</div>
+        <p>Is their army bigger than mine right now?</p>
+      </div>
+      <div class="flow-step no">
+        <div class="lbl">NO → ENGAGE</div>
+        <p>Standing army comes out. Fight at the wall. Win the trade.</p>
+      </div>
+      <div class="flow-step q">
+        <div class="lbl">QUESTION 02 — IF YES</div>
+        <p>Do I have walls + towers between them and my army?</p>
+      </div>
+      <div class="flow-step yes">
+        <div class="lbl">YES → STALL</div>
+        <p>Stay behind defenses. Garrison archers. Let towers + walls do 70% of the work. Send raid cav to their economy.</p>
+      </div>
+      <div class="flow-step q">
+        <div class="lbl">QUESTION 03 — IF NO</div>
+        <p>Is the base they're attacking my MAIN base?</p>
+      </div>
+      <div class="flow-step no">
+        <div class="lbl">NO → LET IT FALL</div>
+        <p>Evacuate villagers. Save the army. Counter-attack their base for the trade.</p>
+      </div>
+      <div class="flow-step yes">
+        <div class="lbl">YES + DESPERATE → COUNTER-COMMIT</div>
+        <p>Send your full army to their base. Race. First to finish wins. <b>No half-measures.</b></p>
+      </div>
+    </div>
+
+    <div class="rule-line"><b>The one question you must NEVER answer "yes" to:</b> <i>"Should I send some units to slow them down?"</i> That's the trickle trap. It's always the wrong answer.</div>
+  </div>
+</section>
+
+<!-- ENDPLATE -->
+<section class="block" style="border-color:var(--accent); border-width:6px">
+  <div class="block-header" style="background:var(--accent)">
+    <span class="num">ENDPLATE</span>
+    <span class="title">When To Use Which</span>
+    <span class="tag">DECISION TABLE</span>
+  </div>
+  <table>
+    <thead>
+      <tr><th>Situation</th><th>Pattern</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Standard defensive posture</td><td><b>01 Kill Box</b></td></tr>
+      <tr><td>Long siege expected</td><td><b>02 Layered Walls</b></td></tr>
+      <tr><td>Far base, outmatched, can't save it</td><td><b>03 Controlled Retreat</b></td></tr>
+      <tr><td>They're bigger but you have better eco</td><td><b>04 The Stall</b></td></tr>
+      <tr><td>You're defending but want pressure</td><td><b>05 Raid While Defending</b></td></tr>
+      <tr><td>Main base under attack, their base empty</td><td><b>06 Counter-Commit</b></td></tr>
+    </tbody>
+  </table>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div>END OF DOCUMENT</div>
+  <div style="margin-top: 8px;">FIELD MANUAL // DEFENSE PATTERNS // PRINTED FOR INTERNAL USE</div>
+</footer>
+
+</body>
+</html>

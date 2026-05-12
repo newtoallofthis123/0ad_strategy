@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PTOLEMIES // PLAYBOOK</title>
+<style>
+  :root {
+    --bg: #e8e6df;
+    --ink: #0a0a0a;
+    --paper: #f5f3eb;
+    --accent: #d83a1e;
+    --rule: #0a0a0a;
+    --mute: #5a5a5a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--ink); }
+  body {
+    font-family: "JetBrains Mono", "SF Mono", "Menlo", "Consolas", monospace;
+    line-height: 1.5;
+    padding: 0;
+  }
+
+  /* --- HEADER --- */
+  .masthead {
+    border-bottom: 6px solid var(--ink);
+    padding: 24px 40px 16px;
+    background: var(--paper);
+  }
+  .masthead .nameplate {
+    font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
+    display: flex; justify-content: space-between;
+    border-bottom: 1px solid var(--ink); padding-bottom: 8px; margin-bottom: 16px;
+  }
+  .masthead h1 {
+    font-size: 64px; font-weight: 900; letter-spacing: -2px; line-height: 0.9;
+    text-transform: uppercase;
+  }
+  .masthead h1 .slash { color: var(--accent); }
+  .masthead .tagline {
+    margin-top: 12px;
+    font-size: 14px; text-transform: uppercase; letter-spacing: 1px;
+    border-top: 1px solid var(--ink); padding-top: 12px;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
+  }
+  .masthead .tagline span { border-right: 1px solid var(--ink); padding-right: 12px; }
+  .masthead .tagline span:last-child { border-right: 0; }
+
+  /* --- LAYOUT --- */
+  main { padding: 0 40px 60px; max-width: 1100px; margin: 0 auto; }
+
+  /* --- PHASE BLOCK --- */
+  .phase {
+    border: 3px solid var(--ink);
+    margin-top: 32px;
+    background: var(--paper);
+  }
+  .phase-header {
+    background: var(--ink); color: var(--paper);
+    padding: 16px 24px;
+    display: flex; justify-content: space-between; align-items: baseline;
+    border-bottom: 3px solid var(--ink);
+  }
+  .phase-header .ph-num {
+    font-size: 14px; letter-spacing: 3px; opacity: 0.6;
+  }
+  .phase-header .ph-title {
+    font-size: 28px; font-weight: 900; letter-spacing: -0.5px;
+    text-transform: uppercase; flex: 1; padding: 0 24px;
+  }
+  .phase-header .ph-time {
+    font-size: 14px; letter-spacing: 2px;
+    border-left: 1px solid var(--paper); padding-left: 16px;
+  }
+  .phase-body { padding: 24px; }
+
+  /* --- SECTION HEADING (inside phase) --- */
+  h3.sec {
+    font-size: 14px; letter-spacing: 3px; text-transform: uppercase;
+    border-bottom: 2px solid var(--ink); padding-bottom: 4px; margin: 24px 0 12px;
+  }
+  h3.sec:first-child { margin-top: 0; }
+
+  /* --- TEXT --- */
+  p, li { font-size: 14px; }
+  p { margin: 8px 0; }
+  ul, ol { padding-left: 20px; }
+  li { margin: 4px 0; }
+  b { font-weight: 700; }
+  .accent { color: var(--accent); font-weight: 700; }
+
+  /* --- GRID BLOCKS --- */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border-top: 2px solid var(--ink); border-left: 2px solid var(--ink); }
+  .grid-2 > div { border-right: 2px solid var(--ink); border-bottom: 2px solid var(--ink); padding: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border-top: 2px solid var(--ink); border-left: 2px solid var(--ink); }
+  .grid-3 > div { border-right: 2px solid var(--ink); border-bottom: 2px solid var(--ink); padding: 16px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border-top: 2px solid var(--ink); border-left: 2px solid var(--ink); }
+  .grid-4 > div { border-right: 2px solid var(--ink); border-bottom: 2px solid var(--ink); padding: 12px; }
+  .grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; border-top: 2px solid var(--ink); border-left: 2px solid var(--ink); }
+  .grid-5 > div { border-right: 2px solid var(--ink); border-bottom: 2px solid var(--ink); padding: 12px; text-align: center; }
+
+  /* --- ICON ROW --- */
+  .icon-cell svg { width: 64px; height: 64px; display: block; margin: 0 auto 8px; }
+  .icon-cell .iname { font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; }
+  .icon-cell .irole { font-size: 11px; color: var(--mute); margin-top: 2px; }
+
+  /* --- TABLES --- */
+  table { width: 100%; border-collapse: collapse; border: 2px solid var(--ink); }
+  th, td { border: 1px solid var(--ink); padding: 10px 12px; text-align: left; vertical-align: top; font-size: 13px; }
+  th { background: var(--ink); color: var(--paper); text-transform: uppercase; letter-spacing: 1.5px; font-size: 11px; }
+
+  /* --- BIG STAT --- */
+  .stat { border: 3px solid var(--ink); padding: 16px; }
+  .stat .label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; }
+  .stat .value { font-size: 32px; font-weight: 900; line-height: 1; margin-top: 4px; }
+  .stat .desc { font-size: 12px; color: var(--mute); margin-top: 6px; }
+
+  /* --- CALLOUTS --- */
+  .rule {
+    background: var(--ink); color: var(--paper);
+    padding: 20px 24px; margin: 16px 0;
+    border-left: 8px solid var(--accent);
+  }
+  .rule .rlabel {
+    font-size: 11px; letter-spacing: 3px; opacity: 0.6; text-transform: uppercase;
+  }
+  .rule .rbody { font-size: 16px; margin-top: 6px; line-height: 1.4; }
+  .rule .rbody b { color: var(--accent); }
+
+  .warn-box {
+    border: 3px solid var(--accent);
+    padding: 16px 20px;
+    margin: 14px 0;
+    background: var(--paper);
+  }
+  .warn-box .wlabel {
+    font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--accent); font-weight: 700;
+  }
+
+  /* --- TIMELINE --- */
+  .ticker {
+    border-top: 3px solid var(--ink);
+    border-bottom: 3px solid var(--ink);
+    padding: 8px 0;
+    margin: 16px 0;
+    font-size: 12px;
+    display: flex; gap: 32px; flex-wrap: wrap;
+    text-transform: uppercase; letter-spacing: 1.5px;
+  }
+  .ticker .tk { white-space: nowrap; }
+  .ticker .tk b { color: var(--accent); }
+
+  /* --- COMPOSITION BAR --- */
+  .comp-bar {
+    display: flex; height: 44px; border: 3px solid var(--ink); margin: 8px 0;
+  }
+  .comp-seg {
+    display: flex; align-items: center; justify-content: center;
+    border-right: 2px solid var(--ink);
+    font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;
+  }
+  .comp-seg:last-child { border-right: 0; }
+  .seg-pike { background: #b8c8d0; }
+  .seg-arch { background: #e8b070; }
+  .seg-skirm { background: #a8c8a0; }
+  .seg-cav { background: #c8a0d0; }
+  .seg-siege { background: var(--accent); color: var(--paper); }
+  .comp-labels {
+    display: grid; grid-template-columns: 40fr 30fr 10fr 15fr 5fr;
+    font-size: 10px; text-transform: uppercase; letter-spacing: 1px;
+    color: var(--mute); margin-top: 2px;
+  }
+  .comp-labels span { text-align: center; }
+
+  /* --- FORMATIONS --- */
+  .formation { border: 2px solid var(--ink); padding: 12px; }
+  .formation h4 {
+    font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
+    border-bottom: 2px solid var(--ink); padding-bottom: 6px; margin-bottom: 10px;
+  }
+  .formation svg { width: 100%; height: 130px; background: var(--bg); display: block; border: 1px solid var(--ink); }
+  .formation .fdesc { font-size: 12px; margin-top: 8px; color: var(--mute); }
+
+  /* --- FOOTER --- */
+  .footer {
+    margin-top: 48px;
+    border-top: 6px solid var(--ink);
+    padding: 24px 40px;
+    text-align: center;
+    font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--mute);
+  }
+  .footer .colophon { margin-top: 8px; }
+
+  /* --- LINKS / numbers --- */
+  .bignum {
+    font-size: 80px; font-weight: 900; line-height: 0.85;
+    letter-spacing: -3px;
+  }
+
+  /* VOLUME NAV */
+  .volume-nav {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr) 48px;
+    align-items: center;
+    gap: 0;
+    background: var(--ink);
+    color: var(--paper);
+    border-bottom: 3px solid var(--ink);
+  }
+  .volume-nav a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .volume-arrow {
+    display: grid;
+    place-items: center;
+    min-height: 48px;
+    border-right: 1px solid var(--paper);
+    font-size: 24px;
+    font-weight: 900;
+  }
+  .volume-arrow.next {
+    border-right: 0;
+    border-left: 1px solid var(--paper);
+  }
+  .volume-title {
+    min-width: 0;
+    padding: 12px 16px;
+    text-align: center;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .volume-arrow:hover,
+  .volume-arrow:focus-visible {
+    background: var(--accent);
+    outline: 0;
+  }
+
+</style>
+</head>
+<body>
+<nav class="volume-nav" aria-label="Volume navigation">
+  <a class="volume-arrow prev" href="Army%20Counter%20Guide.html" aria-label="Previous volume">&lt;</a>
+  <div class="volume-title">Ptolemies Playbook</div>
+  <a class="volume-arrow next" href="Attack%20Strategies.html" aria-label="Next volume">&gt;</a>
+</nav>
+
+<!-- =================== MASTHEAD =================== -->
+<header class="masthead">
+  <div class="nameplate">
+    <span>VOL.01 — TUE 12.MAY.2026</span>
+    <span>FIELD MANUAL // PTOLEMIES // 0 A.D.</span>
+    <span>NO.001</span>
+  </div>
+  <h1>PTOLEMIES<span class="slash">/</span>PLAYBOOK</h1>
+  <div class="tagline">
+    <span>DEFENSIVE-AGGRESSIVE</span>
+    <span>FOUR PHASES</span>
+    <span>FOR THE TURTLE WHO RAIDS</span>
+    <span>READ TOP-DOWN</span>
+  </div>
+</header>
+
+<main>
+
+<!-- =================== ZERO: DOCTRINE =================== -->
+<section class="phase">
+  <div class="phase-header">
+    <span class="ph-num">PHASE 00</span>
+    <span class="ph-title">Doctrine // The Three Laws</span>
+    <span class="ph-time">READ ONCE</span>
+  </div>
+  <div class="phase-body">
+
+    <div class="rule">
+      <div class="rlabel">LAW 01 — COMMIT OR ABANDON</div>
+      <div class="rbody">When a far base is attacked: <b>send your whole army, or write the base off.</b> Never trickle reinforcements. Trickle = lose both army and base.</div>
+    </div>
+
+    <div class="rule">
+      <div class="rlabel">LAW 02 — STAND, DO NOT HIDE</div>
+      <div class="rbody">Standing army <b>outside</b> the fort on aggressive stance. Garrisoning is the panic button, not the strategy.</div>
+    </div>
+
+    <div class="rule">
+      <div class="rlabel">LAW 03 — TRAIN TO RATIO</div>
+      <div class="rbody">No more spam-training. Hit the <b>40/30/10/15/5</b> ratio, then build villagers, not soldiers.</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- =================== UNIT LEGEND =================== -->
+<section class="phase">
+  <div class="phase-header">
+    <span class="ph-num">REF.01</span>
+    <span class="ph-title">Unit Legend // Five Roles</span>
+    <span class="ph-time">/</span>
+  </div>
+  <div class="phase-body">
+    <div class="grid-5">
+      <div class="icon-cell">
+        <svg viewBox="0 0 64 64">
+          <rect x="26" y="10" width="12" height="12" fill="#0a0a0a"/>
+          <rect x="22" y="22" width="20" height="22" fill="#0a0a0a"/>
+          <rect x="18" y="44" width="8" height="14" fill="#0a0a0a"/>
+          <rect x="38" y="44" width="8" height="14" fill="#0a0a0a"/>
+          <rect x="42" y="14" width="4" height="32" fill="#0a0a0a"/>
+          <rect x="38" y="10" width="16" height="6" fill="#d83a1e"/>
+        </svg>
+        <div class="iname">Worker</div>
+        <div class="irole">/ eco</div>
+      </div>
+      <div class="icon-cell">
+        <svg viewBox="0 0 64 64">
+          <rect x="26" y="10" width="12" height="12" fill="#0a0a0a"/>
+          <rect x="22" y="22" width="20" height="22" fill="#0a0a0a"/>
+          <rect x="18" y="44" width="8" height="14" fill="#0a0a0a"/>
+          <rect x="38" y="44" width="8" height="14" fill="#0a0a0a"/>
+          <rect x="10" y="4" width="3" height="56" fill="#0a0a0a"/>
+          <polygon points="8,4 15,4 11.5,-2" fill="#d83a1e"/>
+          <rect x="44" y="24" width="14" height="20" fill="none" stroke="#0a0a0a" stroke-width="3"/>
+        </svg>
+        <div class="iname">Spearman</div>
+        <div class="irole">/ anti-cav</div>
+      </div>
+      <div class="icon-cell">
+        <svg viewBox="0 0 64 64">
+          <rect x="26" y="10" width="12" height="12" fill="#0a0a0a"/>
+          <rect x="22" y="22" width="20" height="22" fill="#0a0a0a"/>
+          <rect x="18" y="44" width="8" height="14" fill="#0a0a0a"/>
+          <rect x="38" y="44" width="8" height="14" fill="#0a0a0a"/>
+          <path d="M46,10 Q58,32 46,54" fill="none" stroke="#0a0a0a" stroke-width="3"/>
+          <line x1="46" y1="10" x2="46" y2="54" stroke="#0a0a0a" stroke-width="1.5"/>
+          <line x1="40" y1="32" x2="62" y2="32" stroke="#d83a1e" stroke-width="2"/>
+          <polygon points="58,28 64,32 58,36" fill="#d83a1e"/>
+        </svg>
+        <div class="iname">Archer</div>
+        <div class="irole">/ ranged DPS</div>
+      </div>
+      <div class="icon-cell">
+        <svg viewBox="0 0 64 64">
+          <rect x="6" y="34" width="46" height="14" fill="#0a0a0a"/>
+          <rect x="50" y="24" width="10" height="14" fill="#0a0a0a"/>
+          <rect x="8" y="48" width="6" height="14" fill="#0a0a0a"/>
+          <rect x="18" y="48" width="6" height="14" fill="#0a0a0a"/>
+          <rect x="34" y="48" width="6" height="14" fill="#0a0a0a"/>
+          <rect x="44" y="48" width="6" height="14" fill="#0a0a0a"/>
+          <rect x="24" y="14" width="12" height="12" fill="#0a0a0a"/>
+          <rect x="22" y="26" width="14" height="12" fill="#0a0a0a"/>
+          <line x1="36" y1="4" x2="60" y2="22" stroke="#d83a1e" stroke-width="3"/>
+        </svg>
+        <div class="iname">Cavalry</div>
+        <div class="irole">/ scout + raid</div>
+      </div>
+      <div class="icon-cell">
+        <svg viewBox="0 0 64 64">
+          <rect x="6" y="32" width="52" height="14" fill="#0a0a0a"/>
+          <rect x="10" y="22" width="44" height="10" fill="#0a0a0a"/>
+          <line x1="14" y1="28" x2="48" y2="6" stroke="#0a0a0a" stroke-width="5"/>
+          <rect x="44" y="2" width="12" height="8" fill="#d83a1e"/>
+          <circle cx="16" cy="52" r="8" fill="none" stroke="#0a0a0a" stroke-width="3"/>
+          <circle cx="48" cy="52" r="8" fill="none" stroke="#0a0a0a" stroke-width="3"/>
+        </svg>
+        <div class="iname">Siege</div>
+        <div class="irole">/ anti-building</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== PHASE I =================== -->
+<section class="phase">
+  <div class="phase-header">
+    <span class="ph-num">PHASE 01</span>
+    <span class="ph-title">Foundation // Boom + Scout</span>
+    <span class="ph-time">00:00 — 06:00</span>
+  </div>
+  <div class="phase-body">
+
+    <h3 class="sec">Objective</h3>
+    <p>Build economy. Find the enemy. Don't fight.</p>
+
+    <h3 class="sec">Step-by-step</h3>
+    <div class="ticker">
+      <span class="tk"><b>00:00</b> queue 5 women</span>
+      <span class="tk"><b>00:00</b> scout outward in arc</span>
+      <span class="tk"><b>00:30</b> 4 food / 2 wood</span>
+      <span class="tk"><b>02:00</b> barracks @ woodline</span>
+      <span class="tk"><b>04:00</b> locate enemy CC</span>
+      <span class="tk"><b>06:00</b> phase II at 25 vil</span>
+    </div>
+
+    <h3 class="sec">Scouting checklist</h3>
+    <table>
+      <tr><th>Target</th><th>Why</th><th>Priority</th></tr>
+      <tr><td>Enemy CC</td><td>Their army sits 20-30s away</td><td>HIGH</td></tr>
+      <tr><td>Their woodcutters</td><td><b>Best raid target.</b> Far + soft</td><td>HIGH</td></tr>
+      <tr><td>Their mining</td><td>Far from base, often unprotected</td><td>MED</td></tr>
+      <tr><td>Their army comp</td><td>Don't push if you don't know</td><td>HIGH</td></tr>
+      <tr><td>Their walls/forts</td><td>If walled: boom. If not: pressure.</td><td>MED</td></tr>
+    </table>
+
+    <div class="warn-box">
+      <div class="wlabel">// Pitfall</div>
+      <p>Don't fight with the scout cav. One dead horse = blind for 60 seconds.</p>
+    </div>
+  </div>
+</section>
+
+<!-- =================== PHASE II =================== -->
+<section class="phase">
+  <div class="phase-header">
+    <span class="ph-num">PHASE 02</span>
+    <span class="ph-title">Tripwire // Forward Presence</span>
+    <span class="ph-time">06:00 — 12:00</span>
+  </div>
+  <div class="phase-body">
+
+    <h3 class="sec">Objective</h3>
+    <p>Stop reacting. Start seeing. Build the wall before the gate is needed.</p>
+
+    <div class="grid-3">
+      <div>
+        <div class="stat">
+          <div class="label">Outposts</div>
+          <div class="value">×2</div>
+          <div class="desc">30s walk OUT from base, on approach paths. Tripwire, not bunker.</div>
+        </div>
+      </div>
+      <div>
+        <div class="stat">
+          <div class="label">Merc Camp</div>
+          <div class="value">×1</div>
+          <div class="desc">Ptolemies bonus. Forward, near outposts. Reinforcements appear where you fight.</div>
+        </div>
+      </div>
+      <div>
+        <div class="stat">
+          <div class="label">Standing Army</div>
+          <div class="value">15</div>
+          <div class="desc">6 pikes / 4 archers / 2 skirm / 3 cav. AGGRESSIVE stance. Outside the fort.</div>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="sec">Critical setting</h3>
+    <p><b>Every barracks rally point</b> → forward outpost. Units never spawn idle. Never trickle to a fight in pieces.</p>
+
+    <h3 class="sec">First raid — 10:00</h3>
+    <p>Send <b>3 cavalry</b> to kill their woodcutters. Kill 4-6 workers, retreat the instant their army shows. Not a fight — a tax.</p>
+
+  </div>
+</section>
+
+<!-- =================== PHASE III =================== -->
+<section class="phase">
+  <div class="phase-header">
+    <span class="ph-num">PHASE 03</span>
+    <span class="ph-title">Pressure // Active Defense</span>
+    <span class="ph-time">12:00 — 20:00</span>
+  </div>
+  <div class="phase-body">
+
+    <h3 class="sec">Army composition // 40 units</h3>
+    <div class="comp-bar">
+      <div class="comp-seg seg-pike" style="width:40%">PIKES 40%</div>
+      <div class="comp-seg seg-arch" style="width:30%">ARCH 30%</div>
+      <div class="comp-seg seg-skirm" style="width:10%">SKM 10%</div>
+      <div class="comp-seg seg-cav" style="width:15%">CAV 15%</div>
+      <div class="comp-seg seg-siege" style="width:5%">SG 5%</div>
+    </div>
+    <div class="comp-labels">
+      <span>16 pikes</span><span>12 archers</span><span>4 skirm</span><span>6 cav</span><span>2 siege</span>
+    </div>
+
+    <h3 class="sec">The harass loop</h3>
+    <div class="grid-4">
+      <div><b>EVERY 90s</b><br><span style="font-size:11px;color:var(--mute)">→ 3 cav to their woodline</span></div>
+      <div><b>KILL 4-6</b><br><span style="font-size:11px;color:var(--mute)">→ workers, retreat</span></div>
+      <div><b>NEVER FIGHT</b><br><span style="font-size:11px;color:var(--mute)">→ their army</span></div>
+      <div><b>NEVER STOP</b><br><span style="font-size:11px;color:var(--mute)">→ until you push</span></div>
+    </div>
+
+    <h3 class="sec">Four green lights to attack</h3>
+    <ol>
+      <li><b>You out-eco them +15 villagers.</b> Convert eco lead into military.</li>
+      <li><b>Their army is on the wrong side of the map</b> (raiding someone else).</li>
+      <li><b>You have siege + they have no walls.</b> Walk in, break it, walk out.</li>
+      <li><b>They just lost a fight.</b> Don't let them rebuild — push now.</li>
+    </ol>
+
+    <h3 class="sec">The far-base attack — your nemesis</h3>
+    <div class="rule">
+      <div class="rlabel">Decide in 5 seconds:</div>
+      <div class="rbody">
+        Army I can send now &gt; their attacking army? → <b>COMMIT EVERYTHING.</b><br>
+        Army I can send now &lt; theirs? → <b>WRITE OFF. COUNTER-ATTACK THEIR BASE.</b><br>
+        Never: <i>"I'll send some to slow them down."</i>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== PHASE IV =================== -->
+<section class="phase">
+  <div class="phase-header">
+    <span class="ph-num">PHASE 04</span>
+    <span class="ph-title">Strike // The Decisive Push</span>
+    <span class="ph-time">20:00 — END</span>
+  </div>
+  <div class="phase-body">
+
+    <h3 class="sec">Pre-push checklist</h3>
+    <div class="grid-2">
+      <div><b>□ FULL ARMY</b><br><span style="font-size:11px;color:var(--mute)">40+ units at ratio</span></div>
+      <div><b>□ SIEGE READY</b><br><span style="font-size:11px;color:var(--mute)">1-2 bolt shooters or rams</span></div>
+      <div><b>□ ECO LEAD</b><br><span style="font-size:11px;color:var(--mute)">+15 villagers over them</span></div>
+      <div><b>□ WALLS HOLD</b><br><span style="font-size:11px;color:var(--mute)">Home base safe if they counter</span></div>
+      <div><b>□ TARGET CHOSEN</b><br><span style="font-size:11px;color:var(--mute)">Their second base, not main</span></div>
+      <div><b>□ RETREAT PLAN</b><br><span style="font-size:11px;color:var(--mute)">In and out, don't overstay</span></div>
+    </div>
+
+    <h3 class="sec">Order of operations</h3>
+    <ol>
+      <li>March <b>whole army</b> to ONE target — usually their secondary base.</li>
+      <li>Kill the buildings, then retreat. Don't get into an attrition fight.</li>
+      <li>Wait 5 minutes. Their main is now starved of that base's income.</li>
+      <li>Push the main. Siege breaks walls, pikes hold their counter, archers kill workers.</li>
+    </ol>
+
+    <div class="warn-box">
+      <div class="wlabel">// Pitfall</div>
+      <p>Do not push the main first. Their main has the most defenders. Take limbs before you take the heart.</p>
+    </div>
+  </div>
+</section>
+
+<!-- =================== PTOL.MERCS =================== -->
+<section class="phase">
+  <div class="phase-header">
+    <span class="ph-num">PTOL.01</span>
+    <span class="ph-title">Mercenaries // Pizza Delivery</span>
+    <span class="ph-time">CIV SIGNATURE</span>
+  </div>
+  <div class="phase-body">
+
+    <h3 class="sec">The reframe</h3>
+    <p>Mercenaries are NOT elite veterans you must protect. <b>They are military teleportation, paid for in metal.</b> They trade food/wood cost → metal cost, in return for fast spawning and forward placement.</p>
+
+    <div class="rule">
+      <div class="rlabel">MANTRA</div>
+      <div class="rbody">Mercenaries are <b>pizza delivery</b>, not knights. Use them. Lose them. Reorder them.</div>
+    </div>
+
+    <h3 class="sec">Five times to use them</h3>
+    <ol>
+      <li><b>Forward Reinforcements</b> — camp near the fight. Units spawn 10s from front, not 60s.</li>
+      <li><b>Emergency Defense</b> — attack incoming, drop camp at the choke, pump instantly.</li>
+      <li><b>Metal-Rich Eco</b> — late game, metal overflowing, food tight. Mercs spend the right resource.</li>
+      <li><b>Filling Comp Gaps</b> — need slingers fast, home barracks full? Merc camp covers it.</li>
+      <li><b>Out-of-Position</b> — army fighting far from home. Drop a camp halfway across the map.</li>
+    </ol>
+
+    <h3 class="sec">When NOT to use</h3>
+    <ul>
+      <li>Phase I (no metal yet)</li>
+      <li>Food overflowing, metal tight</li>
+      <li>As your main bulk army — citizens are cheaper</li>
+    </ul>
+
+    <h3 class="sec">The signature move: Forward Merc Camp</h3>
+    <div class="ticker">
+      <span class="tk"><b>10:00</b> villager forward</span>
+      <span class="tk"><b>10:30</b> merc camp halfway</span>
+      <span class="tk"><b>11:00</b> camp active</span>
+      <span class="tk"><b>11:30</b> reinforce in 10s</span>
+    </div>
+    <p>Under cover of your standing army, build a Merc Camp halfway to the enemy. Your forward outpost is now a unit factory. Reinforcements for any attack spawn in 10 seconds. Devastating on Medium AI — the AI doesn't handle forward production well.</p>
+  </div>
+</section>
+
+<!-- =================== TIER UNLOCKS =================== -->
+<section class="phase">
+  <div class="phase-header">
+    <span class="ph-num">PTOL.02</span>
+    <span class="ph-title">When to Unlock the Big Stuff</span>
+    <span class="ph-time">TIER TIMINGS</span>
+  </div>
+  <div class="phase-body">
+    <table>
+      <tr><th>Tier</th><th>Unlocks</th><th>Target time</th></tr>
+      <tr><td><b>Phase II</b></td><td>Pikes, swordsmen, basic cav, towers, 2nd CC, blacksmith, merc camp</td><td>≈ 6-7 min (25 vil)</td></tr>
+      <tr><td><b>Phase III</b></td><td>Champions, war elephants, siege, embassy mercs, Wonder</td><td>≈ 15-18 min (50-60 vil)</td></tr>
+      <tr><td><b>First Champion</b></td><td>Sacred Band Inf or Cav. 5-10 max — hammer, not bulk.</td><td>≈ 16-18 min</td></tr>
+      <tr><td><b>First Elephant</b></td><td>Tank + building crusher. Pair with pikes + ranged.</td><td>≈ 18-20 min</td></tr>
+      <tr><td><b>First Siege</b></td><td>Bolt shooter. Wall-cracker for the decisive push.</td><td>≈ 16-18 min</td></tr>
+    </table>
+
+    <div class="rule">
+      <div class="rlabel">TRAP</div>
+      <div class="rbody">Don't rush Phase III. Phase III at min 12 with 30 villagers = you can <b>build</b> elephants but can't afford them. Phase III at min 18 with 60 villagers = you actually <b>use</b> it.</div>
+    </div>
+
+    <h3 class="sec">Upgrade priority (research in this order)</h3>
+    <ol>
+      <li><b>Phase-ups</b> — non-negotiable</li>
+      <li><b>Resource gathering upgrades</b> — pay back in &lt;90s</li>
+      <li><b>Blacksmith weapon + armor</b> — affects every combat unit</li>
+      <li><b>Barracks pike upgrades</b> — you have 15+ pikes</li>
+      <li><b>Ptolemies-unique techs</b> — farming, mercenary bonuses</li>
+      <li><b>Unit-specific upgrades</b> — only if 8+ of that unit</li>
+    </ol>
+
+    <p style="font-size: 12px; color: var(--dim); margin-top: 10px;"><i>→ Full economy curves, tripwires, and worker distribution in <b>VOL.05 — Economy + Upgrades</b>.</i></p>
+  </div>
+</section>
+
+<!-- =================== PTOL.03 CHAMPIONS =================== -->
+<section class="phase">
+  <div class="phase-header">
+    <span class="ph-num">PTOL.03</span>
+    <span class="ph-title">Champions // The Hammer</span>
+    <span class="ph-time">PHASE III · 5-10 MAX</span>
+  </div>
+  <div class="phase-body">
+
+    <h3 class="sec">The rule</h3>
+    <p>Champions are <b>force multipliers, not bulk</b>. 5-10 in your army, never 30. Math: a champion costs 3-4× a citizen but is only ~2× as strong. <b>10 champions + 30 citizens beats 50 citizens</b> — because the champions create the line-break the citizens exploit.</p>
+
+    <h3 class="sec">The Ptolemies roster</h3>
+    <table>
+      <tr><th>Champion</th><th>Role</th><th>When to build</th></tr>
+      <tr><td><b>Champion Pikeman (Machimoi)</b></td><td>Flagship. Line-breaker, anti-cav, anti-elephant. Front rank.</td><td>First. Always.</td></tr>
+      <tr><td><b>Champion Infantry / Sword</b></td><td>Heavy melee. Breaks enemy pike walls.</td><td>If facing pike-heavy enemy.</td></tr>
+      <tr><td><b>Champion Cavalry</b></td><td>Elite cav for decisive flank. Not for raids.</td><td>For the decisive push only.</td></tr>
+      <tr><td><b>War Elephants</b></td><td>Tank + building crusher. Champion-tier role.</td><td>Phase III, with champion pikes as escort.</td></tr>
+    </table>
+
+    <h3 class="sec">Army layering with champions</h3>
+    <div class="ticker">
+      <span class="tk"><b>FRONT</b> champion pikes</span>
+      <span class="tk"><b>2ND</b> regular pikes</span>
+      <span class="tk"><b>3RD</b> archers + slingers</span>
+      <span class="tk"><b>WINGS</b> cav</span>
+      <span class="tk"><b>REAR</b> elephants + siege</span>
+    </div>
+
+    <div class="rule">
+      <div class="rlabel">DON'T</div>
+      <div class="rbody">Don't <b>hoard</b> them (10 champions unused &lt; 10 champions used). Don't <b>waste</b> them on raids (200 metal = 1 tower or 3 upgrades). Use them as the <b>hammer</b>; let citizens take the bulk of losses.</div>
+    </div>
+
+    <h3 class="sec">The signature late-game stack</h3>
+    <p><b>Champion Pikemen + War Elephants</b> = the Ptolemies endgame composition. Elephants tank, champion pikes shred any cav that tries to flank, mass ranged behind does the killing. Very few clean counters before minute 20.</p>
+  </div>
+</section>
+
+<!-- =================== PTOL.04 HEROES =================== -->
+<section class="phase">
+  <div class="phase-header">
+    <span class="ph-num">PTOL.04</span>
+    <span class="ph-title">Heroes // The Aura</span>
+    <span class="ph-time">ONE OF EACH · KEEP ALIVE</span>
+  </div>
+  <div class="phase-body">
+
+    <h3 class="sec">What heroes really are</h3>
+    <p>Unique named historical figures, trained at the Fortress in Phase III. <b>Only one of each at a time</b>. The real value isn't their combat — it's the <b>aura</b>, a passive buff to every friendly unit within ~30 tiles.</p>
+
+    <div class="rule">
+      <div class="rlabel">FUNDAMENTAL RULE</div>
+      <div class="rbody"><b>KEEP THEM ALIVE.</b> A dead hero = no aura = ~15-20% army strength gone instantly. Cost + training time is massive. They are NOT champions. They cannot be lost casually.</div>
+    </div>
+
+    <h3 class="sec">The three Ptolemies heroes</h3>
+    <table>
+      <tr><th>Hero</th><th>Buffs</th><th>Pick when</th></tr>
+      <tr><td><b>👑 Ptolemy I Soter</b></td><td>Infantry attack &amp; armor</td><td>Standard pike+sword army</td></tr>
+      <tr><td><b>🐘 Ptolemy IV Philopator</b></td><td>Cavalry &amp; elephants (he rides an elephant himself)</td><td>Elephant-heavy late game</td></tr>
+      <tr><td><b>💰 Cleopatra VII</b></td><td>Economic / training speed (varies by patch)</td><td>Long boom, eco focus</td></tr>
+    </table>
+
+    <h3 class="sec">Where to put the hero</h3>
+    <p><b>Center of your army formation.</b> Not the front (he dies). Not the back (aura doesn't reach the front line). Middle, surrounded by ~10 escort units. Move the hero, the aura moves with him.</p>
+
+    <h3 class="sec">Build timing</h3>
+    <div class="ticker">
+      <span class="tk"><b>18:00</b> phase III + first champions</span>
+      <span class="tk"><b>19:00</b> build/locate fortress</span>
+      <span class="tk"><b>20:00</b> train hero (~60-90s)</span>
+      <span class="tk"><b>21:00</b> assign 5-10 escorts</span>
+      <span class="tk"><b>21:30</b> position center of army</span>
+    </div>
+
+    <h3 class="sec">Common mistakes</h3>
+    <ul>
+      <li>❌ Sending hero alone to scout → dies to 3 spearmen</li>
+      <li>❌ Treating like a champion — heroes are not expendable</li>
+      <li>❌ Building all three at once — pick the one matching your army</li>
+      <li>❌ Building too early — Phase III, after you have an army</li>
+      <li>❌ Forgetting where he is in a chaotic fight</li>
+    </ul>
+
+    <h3 class="sec">The endgame trio</h3>
+    <p><b>Ptolemy IV (on elephant) + 2 War Elephants + 8 Champion Pikemen</b> = the Ptolemies signature endgame stack. Elephants tank, champions hold, hero's aura buffs the whole stack ~15%, Ptolemy IV himself rides in. Roll this with citizen + ranged support and you win most engagements.</p>
+  </div>
+</section>
+
+<!-- =================== FORMATIONS =================== -->
+<section class="phase">
+  <div class="phase-header">
+    <span class="ph-num">REF.02</span>
+    <span class="ph-title">Formations // Four Shapes</span>
+    <span class="ph-time">/</span>
+  </div>
+  <div class="phase-body">
+    <div class="grid-2">
+
+      <div class="formation">
+        <h4>// PHALANX</h4>
+        <svg viewBox="0 0 200 130">
+          <g fill="#0a0a0a">
+            <rect x="20" y="40" width="14" height="22"/><rect x="42" y="40" width="14" height="22"/>
+            <rect x="64" y="40" width="14" height="22"/><rect x="86" y="40" width="14" height="22"/>
+            <rect x="108" y="40" width="14" height="22"/><rect x="130" y="40" width="14" height="22"/>
+            <rect x="152" y="40" width="14" height="22"/><rect x="174" y="40" width="14" height="22"/>
+          </g>
+          <g stroke="#d83a1e" stroke-width="2">
+            <line x1="27" y1="40" x2="27" y2="14"/><line x1="49" y1="40" x2="49" y2="14"/>
+            <line x1="71" y1="40" x2="71" y2="14"/><line x1="93" y1="40" x2="93" y2="14"/>
+            <line x1="115" y1="40" x2="115" y2="14"/><line x1="137" y1="40" x2="137" y2="14"/>
+            <line x1="159" y1="40" x2="159" y2="14"/><line x1="181" y1="40" x2="181" y2="14"/>
+          </g>
+          <g fill="#0a0a0a">
+            <rect x="40" y="82" width="12" height="18"/><rect x="64" y="82" width="12" height="18"/>
+            <rect x="88" y="82" width="12" height="18"/><rect x="112" y="82" width="12" height="18"/>
+            <rect x="136" y="82" width="12" height="18"/><rect x="160" y="82" width="12" height="18"/>
+          </g>
+        </svg>
+        <p class="fdesc">Pikes front, archers behind. Hold ground, defend chokes. Default formation.</p>
+      </div>
+
+      <div class="formation">
+        <h4>// WEDGE</h4>
+        <svg viewBox="0 0 200 130">
+          <g fill="#0a0a0a">
+            <rect x="92" y="20" width="16" height="16"/>
+            <rect x="72" y="42" width="16" height="16"/><rect x="112" y="42" width="16" height="16"/>
+            <rect x="52" y="64" width="16" height="16"/><rect x="92" y="64" width="16" height="16"/><rect x="132" y="64" width="16" height="16"/>
+            <rect x="32" y="86" width="16" height="16"/><rect x="72" y="86" width="16" height="16"/><rect x="112" y="86" width="16" height="16"/><rect x="152" y="86" width="16" height="16"/>
+          </g>
+          <polygon points="100,2 95,15 105,15" fill="#d83a1e"/>
+        </svg>
+        <p class="fdesc">Cavalry only. Breaks through ranged lines. For raids and flanking pikes.</p>
+      </div>
+
+      <div class="formation">
+        <h4>// BOX</h4>
+        <svg viewBox="0 0 200 130">
+          <g fill="#0a0a0a">
+            <rect x="40" y="22" width="14" height="16"/><rect x="62" y="22" width="14" height="16"/>
+            <rect x="84" y="22" width="14" height="16"/><rect x="106" y="22" width="14" height="16"/>
+            <rect x="128" y="22" width="14" height="16"/><rect x="150" y="22" width="14" height="16"/>
+            <rect x="40" y="92" width="14" height="16"/><rect x="62" y="92" width="14" height="16"/>
+            <rect x="84" y="92" width="14" height="16"/><rect x="106" y="92" width="14" height="16"/>
+            <rect x="128" y="92" width="14" height="16"/><rect x="150" y="92" width="14" height="16"/>
+            <rect x="30" y="46" width="14" height="16"/><rect x="30" y="68" width="14" height="16"/>
+            <rect x="160" y="46" width="14" height="16"/><rect x="160" y="68" width="14" height="16"/>
+          </g>
+          <g fill="#d83a1e">
+            <rect x="72" y="55" width="12" height="14"/><rect x="92" y="55" width="12" height="14"/>
+            <rect x="112" y="55" width="12" height="14"/><rect x="132" y="55" width="12" height="14"/>
+            <rect x="82" y="72" width="12" height="14"/><rect x="102" y="72" width="12" height="14"/><rect x="122" y="72" width="12" height="14"/>
+          </g>
+        </svg>
+        <p class="fdesc">Pikes face out, ranged inside. Surrounded? Outnumbered? Box up and survive.</p>
+      </div>
+
+      <div class="formation">
+        <h4>// SKIRMISH</h4>
+        <svg viewBox="0 0 200 130">
+          <g fill="#0a0a0a">
+            <rect x="14" y="60" width="14" height="16"/><rect x="44" y="60" width="14" height="16"/>
+            <rect x="74" y="60" width="14" height="16"/><rect x="104" y="60" width="14" height="16"/>
+            <rect x="134" y="60" width="14" height="16"/><rect x="164" y="60" width="14" height="16"/>
+          </g>
+          <g stroke="#d83a1e" stroke-width="2">
+            <line x1="21" y1="60" x2="21" y2="30"/><line x1="51" y1="60" x2="51" y2="30"/>
+            <line x1="81" y1="60" x2="81" y2="30"/><line x1="111" y1="60" x2="111" y2="30"/>
+            <line x1="141" y1="60" x2="141" y2="30"/><line x1="171" y1="60" x2="171" y2="30"/>
+          </g>
+          <g stroke="#0a0a0a" stroke-width="2" fill="none">
+            <line x1="21" y1="80" x2="21" y2="110"/><polyline points="15,103 21,110 27,103"/>
+            <line x1="171" y1="80" x2="171" y2="110"/><polyline points="165,103 171,110 177,103"/>
+          </g>
+        </svg>
+        <p class="fdesc">Spread wide, throw, retreat, repeat. Counter slow melee blobs. Never melee.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- =================== BAD HABITS =================== -->
+<section class="phase">
+  <div class="phase-header">
+    <span class="ph-num">REF.03</span>
+    <span class="ph-title">Bad Habits // Fix Table</span>
+    <span class="ph-time">/</span>
+  </div>
+  <div class="phase-body">
+    <table>
+      <tr><th>You do this</th><th>Do this instead</th></tr>
+      <tr><td>Spam-train units randomly</td><td>Train to 40/30/10/15/5 ratio. Pause when met. Build villagers.</td></tr>
+      <tr><td>Garrison only when raided</td><td>Standing army OUTSIDE fort, aggressive stance. Garrison = emergency only.</td></tr>
+      <tr><td>Drip reinforcements to a losing fight</td><td>Commit fully OR write off &amp; counter. Never in between.</td></tr>
+      <tr><td>Expand faster than you can defend</td><td>Each new base = its own fort + outpost or it doesn't exist.</td></tr>
+      <tr><td>Defend, defend, defend</td><td>3-cav harass loop every 90s. Tax their economy constantly.</td></tr>
+      <tr><td>Stop scouting after the start</td><td>One cav on permanent enemy patrol. Replace instantly if it dies.</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- =================== ENDPLATE =================== -->
+<section class="phase" style="border-color:var(--accent); border-width:6px">
+  <div class="phase-header" style="background:var(--accent)">
+    <span class="ph-num">ENDPLATE</span>
+    <span class="ph-title">Every Game // In Order</span>
+    <span class="ph-time">MEMORIZE</span>
+  </div>
+  <div class="phase-body">
+    <div class="grid-4">
+      <div><span class="bignum">01</span><br><b>SCOUT</b><br><span style="font-size:11px;color:var(--mute)">Enemy by 4:00</span></div>
+      <div><span class="bignum">02</span><br><b>BOOM</b><br><span style="font-size:11px;color:var(--mute)">25 vil before phase</span></div>
+      <div><span class="bignum">03</span><br><b>TRIPWIRE</b><br><span style="font-size:11px;color:var(--mute)">2 outposts forward</span></div>
+      <div><span class="bignum">04</span><br><b>STAND</b><br><span style="font-size:11px;color:var(--mute)">15-unit ball, aggressive</span></div>
+      <div><span class="bignum">05</span><br><b>HARASS</b><br><span style="font-size:11px;color:var(--mute)">3 cav, every 90s</span></div>
+      <div><span class="bignum">06</span><br><b>COMPOSE</b><br><span style="font-size:11px;color:var(--mute)">40/30/10/15/5</span></div>
+      <div><span class="bignum">07</span><br><b>COMMIT</b><br><span style="font-size:11px;color:var(--mute)">All-in or write off</span></div>
+      <div><span class="bignum">08</span><br><b>STRIKE</b><br><span style="font-size:11px;color:var(--mute)">Limbs first, then heart</span></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div>END OF DOCUMENT</div>
+  <div class="colophon">FIELD MANUAL // PTOLEMIES // PRINTED FOR INTERNAL USE</div>
+</footer>
+
+</body>
+</html>
