@@ -1,4 +1,4 @@
-# 0AG Field Manual
+# 0AD Field Manual
 
 Pure static magazine-style shell for the 0 A.D. manuals.
 

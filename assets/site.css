@@ -86,13 +86,23 @@ h1 {
 .cover-note {
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: space-between;
   padding: 24px;
   border-left: 3px solid var(--ink);
   background: var(--ink);
   color: var(--paper);
   min-height: 250px;
   font-size: 15px;
+}
+
+.issue-mark {
+  display: block;
+  width: min(100%, 210px);
+  aspect-ratio: 1;
+  object-fit: cover;
+  border: 3px solid var(--paper);
+  margin-bottom: 22px;
+  image-rendering: auto;
 }
 
 .cover-note b {
